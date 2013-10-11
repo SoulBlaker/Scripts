@@ -1,0 +1,29 @@
+		.----------------------------------------------------------.
+		.                SoulBlaker Scripts Apresenta:             .
+		.                ___________________                       .
+		.               /   _____/\______   \                      .
+		.               \_____  \  |    |  _/                      .
+		.               /        \ |    |   \                      .
+		.              /_______  / |______  /                      .
+		.                      \/         \/                       .
+		.            [ Cronus Advanced Scripts ]                   .
+		.                                                    v1.1  .
+		.----------------------------------------------------------.
+		;  http://forum.cronus-emulator.com/user/20800-soulblaker  ;
+		*----------------------------------------------------------*
+
+		2013/10/10 - Voltando as ruas :D
+
+		Atenção aqui se encontra antigos e novos trabalhos em
+		desenvolvimento sobre projeto de emuladores de Ragnarok.
+
+		Todos meus scripts são para livre uso, mais por favor, não
+		retirar os créditos e acrescentar aonde for postado o link
+		de user meu ao Fórum do Cronus.
+
+								Obrigado!!
+
+
+		O que tem de novo?
+
+		/eventos/	-> Aqui se encontra todos os scripts de evento.
