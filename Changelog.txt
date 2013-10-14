@@ -1,2 +1,3 @@
+	2013/10/14 - Enviado npc de evento DevilSquare. [SoulBlaker]
         2013/10/14 - Criado pasta da Guerra do Emperium e enviado npc Top Break. [SoulBlaker]
 	2013/10/14 - Criado pasta de Eventos e enviado Evento Baile Noturno. [SoulBlaker]
