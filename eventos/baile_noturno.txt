@@ -1,0 +1,411 @@
+// .----------------------------------------------------------.
+// .                SoulBlaker Scripts Apresenta:             .
+// .                ___________________                       .
+// .               /   _____/\______   \                      .
+// .               \_____  \  |    |  _/                      .
+// .               /        \ |    |   \                      .
+// .              /_______  / |______  /                      .
+// .                      \/         \/                       .
+// .            [ eAthena Advanced Scripts ]                  .
+// .                                                    v1.0  .
+// .----------------------------------------------------------.
+// ;   http://www.eathena.ws/board/SoulBlaker-m271867.html    ;
+// .----------------------------------------------------------.
+// . Script:                                                  .
+// .  Baile Noturno                                           .
+// .----------------------------------------------------------.
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.1   .
+// . (O)Por: Tomasco   Compátivel: eAthena   versão(o): 1.1   .
+// .----------------------------------------------------------.
+// . Descrição:                                               .
+// .  Evento Social nas Noites de Sexta-feira das 21 as 22hs; .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .   - 1.0 Reestruturado NPC. [SoulBlaker]                  .
+// .   - 1.1 Corrigido eventos do NPC e aprimorado a checagem .
+// .	     de tempo. [SoulBlaker]                           .
+// .----------------------------------------------------------.
+// . Notas da versão baseada:                                 .
+// .	- Evento Social nas Noites de Sexta-feira das 21 as   .
+// .      22hs;						      .
+// .    - Divertido, Cada char escolhe como vai entrar na     .
+// .      Festa:                                              .
+// .    - Traje de Gala (meninos) ou Vestido de Noiva         .
+// .      (meninas);                                          .
+// .	- Fantasiado de Monstro ou Tamanho modificado	      .
+// .	  (apenas no Salão de Festas);			      .
+// .	- No Salão acontecem MiniEventos bem interessantes:   .
+// .		Alice no Baile : A Alice veio para o Baile e  .
+// .				 trouxe a sua prima Aliza !!  .
+// .	- Penetras na Festa : A gangue do Valaris entrou de   .
+// .			      penetra na Festa!		      .
+// .	- Comes e Bebes : Garçons servem as Mesas !!          .
+// .			  (movem-se e "getitem" doces)        .
+// .	- Colabore : Acréscimos seus no Tópico!               .
+// *----------------------------------------------------------*
+prontera,155,285,3	script	Baile Noturno#EvNoturno	878,{
+
+	if( gettime(4) == 5 )
+	{
+		cutin "orleans_1",2;
+		mes "[Recepcionista]";
+		mes "Por favor, volte sexta-feira à noite...";
+		close2;
+		cutin "", 255;
+		end;
+	}
+
+	cutin "orleans_1",2;
+	mes "[Recepcionista]";
+	mes "Seja bem-vindo(a) ao Baile noturno do Rune-Midgard!";
+	mes "O qude seja?";
+	next;
+	while(1)
+	{
+		switch( select("- Me fale sobre o Baile!", "- Ír ao Baile de Gala.","- Ír ao Baile à Fantasia.", "- Ír ao Baile com outro tamanho.","- Saír.") )
+		{
+			case 1:
+				mes "[Recepcionista]";
+				mes "O Baile é um grande evento social das sextas, 21 as 22hs, para se brincar e conhecer outras pessoas.";
+				next;
+				mes "[Recepcionista]";
+				mes "Nele poderá trajar gala, se fantasiar de monstro ou mudar de tamanho. E ainda concorrer a prêmios e brincar com os GMs!";
+				next;
+				mes "[Recepcionista]";
+				mes "Traga os amigos e venha se divertir um bocado!!";
+				next;
+				break;
+			case 2:
+				mes "[Recepcionista]";
+				mes "Deseja entrar agora em seu traje de festa?";
+				next;
+				switch( select("- Sim.", "- Voltar.", "- Saír." ) )
+				{
+					case 1: 
+						if( !Sex && !countitem(7170) )
+						{ // Masculino false
+							mes "[Recepcionista]";
+							mes "Você precisa estar com seu traje de gala para entrar na festa!";
+							close2;
+							cutin "", 255;
+						}
+						else if( Sex && !countitem(2338) )
+						{ // Feminino false
+							mes "[Recepcionista]";
+							mes "Você precisa estar com seu vestido de noiva para entrar na festa!";
+							close2;
+							cutin "", 255;
+						}
+						else if( !Sex )
+						{ // Masculino true
+							mes "[Recepcionista]";
+							mes "Os rapazes entram com Traje de Texugo!";
+							mes "Vamos lá!";
+							close2;
+							cutin "", 255;
+							warp "lhz_in01", 102, 205;
+						}
+						else {
+							mes "[Recepcionista]";
+							mes "As moças entram com Vestido de Noiva!";
+							mes "Vamos lá!";
+							close2;
+							cutin "", 255;
+							warp "lhz_in01", 125, 205;
+						}
+						end;
+					case 2:
+						break;
+					case 3:
+						mes "[Recepcionista]";
+						mes "Poxa! Nâo vai ser a mesma coisa sem você...";
+						close2;
+						cutin "", 255;
+						end;
+						
+				}
+				break;
+			case 3:
+				mes "[Recepcionista]";
+				mes "Então gosta de tirar um sarro dos Monstros e Npcs, heim!?";
+				mes "Muito bem! Brinque de ser um Monstro com seus amigos...";
+				mes "Só não vale ficar sério!";
+				next;
+				mes "[Recepcionista]";
+				mes "Deseja entrar agora?";
+				next;
+				switch( select("- Sim.","- Entrar pelos fundos.","- Voltar.", "- Saír.") )
+				{
+					case 1:
+						set .@loop_2, 1;
+						while( .@loop_2 )
+						{
+							mes "[Recepcionista]";
+							mes "* Para entrar como algum monstro, digite um número entre 1001 à 1816!";
+							mes "* Para entrar como algum npc, digite o número de 46 à 937!";
+							mes "* Para saír, digite 'Saír'.";
+							mes "* Para voltar, digite 'Voltar'.";
+							next;
+							input .@disguise_id$;
+
+							if( .@disguise_id$ == "Saír" )
+							{
+								mes "[Recepcionista]";
+								mes "Poxa! Nâo vai ser a mesma coisa sem você...";
+								close2;
+								cutin "", 255;
+								end;
+							}
+							else if( .@disguise_id$ == "Voltar" )
+							{
+								set .@loop_2, 0;
+							}
+							else if( (.@disguise_id$ >= 1001 && .@disguise_id$ <= 1816) || (.@disguise_id$ >= 46 && .@disguise_id$ <= 937) )
+							{
+								mes "[Recepcionista]";
+								mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
+								close2;
+								atcommand @disguise "+ .@disguise_id$;
+								specialeffect2 434;
+								cutin "", 255;
+								warp "lhz_ind01", 14, 25;
+								end;
+							}
+							else {
+								mes "[Recepcionista]";
+								mes "Me desculpe, mais você não digitou um número ou nome correto!";
+								next;
+							}
+						}
+						break;
+					case 2:
+						set .@rand_1, rand(1);
+
+						if( .@rand_1 )
+							set .@rand_2, rand(1001, 1816);
+						else
+							set .@rand_2, rand(46, 937);
+
+						mes "[Recepcionista]";
+						mes "Muito bem você será um " + getmonsterinfo(.@rand_2, 0) + ", vamos lá!";
+						close2;
+						atcommand "@disguise "+ .@rand_2;
+						specialeffect2 434;
+						cutin "", 255;
+						warp "lhz_in01", 14, 25;
+						end;
+					case 3:
+						break;
+					case 4:
+						mes "[Recepcionista]";
+						mes "Poxa! Nâo vai ser a mesma coisa sem você...";
+						close2;
+						cutin "", 255;
+						end;
+				}
+				break;
+			case 4:
+				mes "[Recepcionista]";
+				mes "Escolha o tamanho que você deseja ír ao baile!";
+				next;
+				switch( select("- Gigante.", "- Pequeno.", "- Voltar.", "- Saír.") )
+				{
+					case 1:
+						mes "[Recepcionista]";
+						mes "Muito bem gigante, vamos ao baile!";
+						close2;
+						atcommand "@size 2";
+						cutin "", 255;
+						warp "lhz_in01", 15, 26;
+						end;
+					case 2:
+						mes "[Recepcionista]";
+						mes "Muito bem pequeno, vamos ao baile!";
+						close2;
+						atcommand "@size 1";
+						cutin "", 255;
+						warp "lhz_in01", 15, 23;
+						end;
+					case 3:
+						break;
+					case 4:
+						mes "[Recepcionista]";
+						mes "Poxa! Nâo vai ser a mesma coisa sem você...";
+						close2;
+						cutin "", 255;
+						end;
+				}
+				break;
+			case 5:
+				mes "[Recepcionista]";
+				mes "Poxa! Nâo vai ser a mesma coisa sem você...";
+				close2;
+				cutin "", 255;
+				end;
+		}
+
+		mes "[Recepcionista]";
+		mes "Em que posso te ajudar?";
+		next;
+	}
+}
+
+// Garçom
+lhz_in01,29,34,5	script	Garçom#EvNoturno_01::GarcomEvNoturno	822,6,6,{
+
+	end;
+
+OnTouch:
+	set .@rand_1, rand(1, 50);
+
+	if( .@rand_1 < 14 )
+	{
+		setarray .@item[1], 519, 575, 559, 560, 526, 529, 530, 558, 573, 562, 574, 514, 536, 568, 570, 571, 572, 554, 539, 544, 564, 550, 556, 567, 551, 566, 565, 557, 531, 532, 534, 533, 538, 561;
+		getitem .@item[.@rand_1], 1;
+
+		set .@rand_2, rand(2);
+
+		switch( .@rand_2 )
+		{
+			case 0: emotion 33; npctalk "Pois não !?"; break;
+			case 1: emotion 21; npctalk "Aproveite a Festa...!!!"; break;
+			case 2: emotion 15; npctalk "É um prazer te servir!"; break;
+		}
+	}
+	end;
+
+OnClock2101:
+	if( gettime(4) == 5 )
+	{
+		debugmes "Iniciou o npc com sucesso!";
+		npcspeed 80;
+		initnpctimer;
+		startnpctimer;
+		//setnpctimer 0;
+	}
+	end;
+
+OnTimer10000:
+	npcwalkto 30+rand(8),35+rand(8);
+	stopnpctimer;
+	startnpctimer;
+	//setnpctimer 0;
+	end;
+}
+
+lhz_in01,33,24,3	duplicate(GarcomEvNoturno)	Garçom#EvNoturno_02	822,6,6
+lhz_in01,20,43,1	duplicate(GarcomEvNoturno)	Garçom#EvNoturno_03	822,6,6
+
+// Evento da Festa
+-	script	Evento Noturno#Festa	-1,{
+
+OnClock2030:
+	if( gettime(4) == 5 ) announce "Participe do Baile Noturno em 30 min.!!",8;
+	end;
+
+OnClock2045:
+	if( gettime(4) == 5 ) announce "O Baile começa em 15 min! Faça novos amigos e conheça nossos GMs...",8;
+	end;
+OnClock1531:
+OnClock2100:
+	if( gettime(4) == 5 )
+	{
+		debugmes "[Evento Baile Noturno]: Íniciado Evento e habilitado Garçons!";
+		setmapflag "lhz_in01",mf_nowarp;
+		announce "O BAILE COMEÇOU! Muita diversão e espaço prá brincar no maior Evento social de Midgard !!",8;
+		enablenpc "GarcomEvNoturno";
+		set $@evento_noturno_garcom, 1;
+		set $@evento_noturno, 1;
+		//Inicializar evento Alice
+		donpcevent "EvNoturnoAlice::OnStartEvent";
+	}
+	end;
+
+OnClock2128:
+	if( gettime(4) == 5 ) announce "Em andamento no Baile muitos mini-eventos, comes e bebes, além de boa companhia e romance...",8;
+	end;
+
+OnClock2130:
+OnClock1532:
+	//Inicializar evento Penetras no Baile
+	if( gettime(4) == 5 ) donpcevent "EvNoturnoPenetras::OnStartEvent";
+	end;
+
+OnClock2200:
+OnClock1533:
+	if( gettime(4) == 5 )
+	{
+		debugmes "[Evento Baile Noturno]: Encerrado Evento!";
+		announce "O Baile acabou... Mas a Festa continua!!",8;
+		disablenpc "GarcomEvNoturno";
+		set $@evento_noturno_garcom, 0;
+		set $@evento_noturno_alice, 0;
+		atcommand "@undisguiseall";
+	}
+	end;
+
+OnInit:
+	if( !$@evento_noturno_garcom )
+	{
+		disablenpc "GarcomEvNoturno";
+	}
+	end;
+}
+
+// Evento Leve Alice para Casa!
+-	script	Evento Noturno#Alice_01::EvNoturnoAlice	-1,{
+OnInit:
+	end;
+
+OnMonsterKill:
+	if( !$@evento_noturno_alice )
+		end;
+
+	MapAnnounce "lhz_in01","Alice : Que Festa linda!! Mas " + strcharinfo(0) + " me levará prá casa...",17;
+	set $@evento_noturno_alice, 0;
+	end;
+
+OnStartEvent:
+	debugmes "[Evento Baile Noturno]: Íniciado Evento Leve Alice para Casa!";
+	if( $@evento_noturno == 0 )
+		end;
+
+	else if( $@evento_noturno_alice == 1 )
+		end;
+
+	set $@evento_noturno_alice, 1;
+	mapannounce "lhz_in01","A Alice veio para o Baile e trouxe a sua prima Aliza!!",17;
+	monster "lhz_in01",116,132,"Alice",1275,1,"Evento Noturno#Alice_01::OnMonsterKill";
+	monster "lhz_in01",111,132,"Aliza",1737,1,"Evento Noturno#Alice_01::OnMonsterKill";
+	end;
+}
+
+// Evento Penetras do Baile!
+-	script	Evento Noturno#Penetras::EvNoturnoPenetras	-1,{
+OnInit:
+	end;
+
+OnMonsterKill:
+	if( !$@evento_noturno_penetras )
+		end;
+
+	MapAnnounce "lhz_in01","Obrigado, "+strcharinfo(0)+" por nos livrar desses encrenqueiros da Gangue Valaris!!",17;
+	set $@evento_noturno_penetras, 0;
+	end;
+
+OnStartEvent:
+	debugmes "[Evento Baile Noturno]: Íniciado Evento Penetras no Baile!";
+	if( $@evento_noturno == 0 )
+		end;
+
+	else if( $@evento_noturno_penetras == 1 )
+		end;
+
+	set $@evento_noturno_penetras, 1;
+	MapAnnounce "lhz_in01","A gangue do Valaris entrou de penetra na Festa!!!",17;
+	monster "lhz_in01",120,150,"Capanga do Valaris",1901,1,"Evento Noturno#Penetras::OnMonsterKill";
+	monster "lhz_in01",126,148,"Ganguester",1592,1,"Evento Noturno#Penetras::OnMonsterKill";
+	monster "lhz_in01",126,148,"Penetra",1839,1,"Evento Noturno#Penetras::OnMonsterKill";
+	end;
+
+}
