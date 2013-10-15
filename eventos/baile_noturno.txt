@@ -14,7 +14,7 @@
 // . Script:                                                  .
 // .  Baile Noturno                                           .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.1   .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2   .
 // . (O)Por: Tomasco   Compátivel: eAthena   versão(o): 1.1   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
