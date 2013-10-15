@@ -14,7 +14,7 @@
 // . Script:                                                  .
 // .  Baile Noturno                                           .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2   .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2b  .
 // . (O)Por: Tomasco   Compátivel: eAthena   versão(o): 1.1   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
@@ -25,7 +25,9 @@
 // .   - 1.1 Corrigido eventos do NPC e aprimorado a checagem .
 // .	     de tempo. [SoulBlaker]                           .
 // .   - 1.2 Corrigido erro de string no atcommand.           .
-//	     [SoulBlaker]				      .
+// .	     [SoulBlaker]				      .
+// .   - 1.2b Usado metodos de conversão para string da var   .
+// .	      do input do disguise. [SoulBlaker]	      .
 // .----------------------------------------------------------.
 // . Notas da versão baseada:                                 .
 // .	- Evento Social nas Noites de Sexta-feira das 21 as   .
@@ -162,21 +164,26 @@ prontera,155,285,3	script	Baile Noturno#EvNoturno	878,{
 							{
 								set .@loop_2, 0;
 							}
-							else if( (.@disguise_id$ >= 1001 && .@disguise_id$ <= 1816) || (.@disguise_id$ >= 46 && .@disguise_id$ <= 937) )
+							else
 							{
-								mes "[Recepcionista]";
-								mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
-								close2;
-								atcommand "@disguise "+ .@disguise_id$;
-								specialeffect2 434;
-								cutin "", 255;
-								warp "lhz_ind01", 14, 25;
-								end;
-							}
-							else {
-								mes "[Recepcionista]";
-								mes "Me desculpe, mais você não digitou um número ou nome correto!";
-								next;
+								set .@disguise_id, .@disguise_id$;
+
+								if( (.@disguise_id >= 1001 && .@disguise_id <= 1816) || (.@disguise_id >= 46 && .@disguise_id <= 937) )
+								{
+									mes "[Recepcionista]";
+									mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
+									close2;
+									atcommand "@disguise "+ .@disguise_id;
+									specialeffect2 434;
+									cutin "", 255;
+									warp "lhz_in01", 14, 25;
+									end;
+								}
+								else {
+									mes "[Recepcionista]";
+									mes "Me desculpe, mais você não digitou um número ou nome correto!";
+									next;
+								}
 							}
 						}
 						break;

@@ -1,4 +1,8 @@
-	2013/10/14 - Corrigido erro de string no atcommand do Baile Noturno. [SoulBlaker]
-	2013/10/14 - Enviado npc de evento DevilSquare. [SoulBlaker]
-        2013/10/14 - Criado pasta da Guerra do Emperium e enviado npc Top Break. [SoulBlaker]
-	2013/10/14 - Criado pasta de Eventos e enviado Evento Baile Noturno. [SoulBlaker]
+	2013/10/14
+		* Usado metodos de conversão para string da var do input do disguise do Evento Baile Noturno.
+			- Ficava dando debug no mapserver.
+			@ Agradecimento a LordAragorn do Fórum do Cronus-Emulator por realizar testes no script.
+		* Corrigido erro de string no atcommand do Baile Noturno.
+		* Enviado npc de evento DevilSquare.
+		* Criado pasta da Guerra do Emperium e enviado npc Top Break.
+		* Criado pasta de Eventos e enviado Evento Baile Noturno. [SoulBlaker]
