@@ -24,6 +24,8 @@
 // .   - 1.0 Reestruturado NPC. [SoulBlaker]                  .
 // .   - 1.1 Corrigido eventos do NPC e aprimorado a checagem .
 // .	     de tempo. [SoulBlaker]                           .
+// .   - 1.2 Corrigido erro de string no atcommand.           .
+//	     [SoulBlaker]				      .
 // .----------------------------------------------------------.
 // . Notas da versão baseada:                                 .
 // .	- Evento Social nas Noites de Sexta-feira das 21 as   .
@@ -165,7 +167,7 @@ prontera,155,285,3	script	Baile Noturno#EvNoturno	878,{
 								mes "[Recepcionista]";
 								mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
 								close2;
-								atcommand @disguise "+ .@disguise_id$;
+								atcommand "@disguise "+ .@disguise_id$;
 								specialeffect2 434;
 								cutin "", 255;
 								warp "lhz_ind01", 14, 25;
