@@ -1,3 +1,6 @@
+	2013/10/15
+		* Atualizações no npc Evento Noturno para prevenção de bugs. [SoulBlaker]
+			@ Mudanças estão sendo efetuada nos cabeçalho dos scripts para fins de melhorar resolução de changelog da versão, ignorem estes processos.
 	2013/10/14
 		* Usado metodos de conversão para string da var do input do disguise do Evento Baile Noturno.
 			- Ficava dando debug no mapserver.

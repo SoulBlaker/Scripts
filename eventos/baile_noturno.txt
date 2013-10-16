@@ -1,33 +1,44 @@
-// .----------------------------------------------------------.
-// .                SoulBlaker Scripts Apresenta:             .
-// .                ___________________                       .
-// .               /   _____/\______   \                      .
-// .               \_____  \  |    |  _/                      .
-// .               /        \ |    |   \                      .
-// .              /_______  / |______  /                      .
-// .                      \/         \/                       .
-// .            [ eAthena Advanced Scripts ]                  .
-// .                                                    v1.0  .
-// .----------------------------------------------------------.
-// ;   http://www.eathena.ws/board/SoulBlaker-m271867.html    ;
+//.-----------------------------------------------------------.
+//.             SoulBlaker Scripts Apresenta:                 .
+//.                 ___________________                       .
+//.                /   _____/\______   \                      .
+//.                \_____  \  |    |  _/                      .
+//.                /        \ |    |   \                      .
+//.               /_______  / |______  /                      .
+//.                       \/         \/                       .
+//.             [ Cronus Advanced Scripts ]                   .
+//.                                                     v1.1  .
+//.-----------------------------------------------------------.
+//;  http://forum.cronus-emulator.com/user/20800-soulblaker   ;
 // .----------------------------------------------------------.
 // . Script:                                                  .
 // .  Baile Noturno                                           .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2b  .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.3   .
 // . (O)Por: Tomasco   Compátivel: eAthena   versão(o): 1.1   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
 // .  Evento Social nas Noites de Sexta-feira das 21 as 22hs; .
 // .----------------------------------------------------------.
 // . Changelog da Versão:                                     .
-// .   - 1.0 Reestruturado NPC. [SoulBlaker]                  .
-// .   - 1.1 Corrigido eventos do NPC e aprimorado a checagem .
-// .	     de tempo. [SoulBlaker]                           .
-// .   - 1.2 Corrigido erro de string no atcommand.           .
-// .	     [SoulBlaker]				      .
-// .   - 1.2b Usado metodos de conversão para string da var   .
-// .	      do input do disguise. [SoulBlaker]	      .
+// .  * 1.0 [SoulBlaker]                                      .
+// .	- Reestruturado NPC.                                  .
+// .							      .
+// .  * 1.1 [SoulBlaker]				      .
+// .	- Corrigido eventos do NPC e aprimorado a checagem de .
+// .	  tempo.                           		      .
+// .							      .
+// .  * 1.2 [SoulBlaker]				      .
+// .    - Corrigido erro de string no atcommand.              .
+// .	     						      .
+// .  * 1.2b [SoulBlaker]                                     .
+//	- Usado metodos de conversão para string da var do    .
+// .	  input do disguise. 				      .
+// .                                                          .
+// .  * 1.3 [SoulBlaker]                                      .
+// .    - Correção dos dialogos de disguise. Previne erros    .
+// .	  gerado pelo getmonsterinfo em desguise usado para   .
+// .      transformação de personagens do jogo (NPC).         .
 // .----------------------------------------------------------.
 // . Notas da versão baseada:                                 .
 // .	- Evento Social nas Noites de Sexta-feira das 21 as   .
@@ -171,7 +182,12 @@ prontera,155,285,3	script	Baile Noturno#EvNoturno	878,{
 								if( (.@disguise_id >= 1001 && .@disguise_id <= 1816) || (.@disguise_id >= 46 && .@disguise_id <= 937) )
 								{
 									mes "[Recepcionista]";
-									mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
+
+									if( .@disguise_id >= 1001 && .@disguise_id <= 1816 )
+										mes "Muito bem você será um " + getmonsterinfo(.@disguise_id, 0) + ", vamos lá!";
+									else
+										mes "Muito bem, você irá fantasiado como um personagem do jogo!";
+
 									close2;
 									atcommand "@disguise "+ .@disguise_id;
 									specialeffect2 434;
@@ -190,13 +206,18 @@ prontera,155,285,3	script	Baile Noturno#EvNoturno	878,{
 					case 2:
 						set .@rand_1, rand(1);
 
-						if( .@rand_1 )
-							set .@rand_2, rand(1001, 1816);
-						else
-							set .@rand_2, rand(46, 937);
-
 						mes "[Recepcionista]";
-						mes "Muito bem você será um " + getmonsterinfo(.@rand_2, 0) + ", vamos lá!";
+
+						if( .@rand_1 )
+						{
+							set .@rand_2, rand(1001, 1816);
+							mes "Muito bem você será um " + getmonsterinfo(.@rand_2, 0) + ", vamos lá!";
+						}
+						else {
+							set .@rand_2, rand(46, 937);
+							mes "Muito bem, você irá fantasiado como um personagem do jogo!";
+						}
+
 						close2;
 						atcommand "@disguise "+ .@rand_2;
 						specialeffect2 434;
