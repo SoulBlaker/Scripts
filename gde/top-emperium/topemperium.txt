@@ -1,0 +1,318 @@
+// .----------------------------------------------------------.
+// .             SoulBlaker Scripts Apresenta:                .
+// .                 ___________________                      .
+// .                /   _____/\______   \                     .
+// .                \_____  \  |    |  _/                     .
+// .                /        \ |    |   \                     .
+// .               /_______  / |______  /                     .
+// .                       \/         \/                      .
+// .             [ Cronus Advanced Scripts ]                  .
+// .                                                    v1.1  .
+// .----------------------------------------------------------.
+// ;  http://forum.cronus-emulator.com/user/20800-soulblaker  ;
+// .----------------------------------------------------------.
+// . Script:                                                  .
+// .  Top Emperium                                            .
+// .----------------------------------------------------------.
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.0   .
+// .----------------------------------------------------------.
+// . Descrição:                                               .
+// .	- Ranking Top Emperium de Jogadores.                  .
+// .	- Ranking Top Emperium de Clãns.                      .
+// .    - Ranking Top Emperium de Jogadores por Castelo.      .
+// .    - Ranking Top Emperium de Clãns por Castelo.          .
+// . Notas:                                                   .
+// .	- Este Script é compátivel com Cronus SQL.            .
+// .	- Este Script tem que ser adicionado dentro do script .
+// .	  da Guerra do Emperium que vem com o emulador.       .
+// .	- Versão da Guerra do Emperium: XXXXX		      .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .  * 1.0 [SoulBlaker]                                      .
+// .	- Iniciado o NPC.                                     .
+// *----------------------------------------------------------*
+
+// .----------------------------------------------------------.
+// . 	  Função para Computar conquistas no Top Emperium     .
+// .                                                          .
+// . Argumentos:                                              .
+// .	(0): Recebe a GuildID que quebrou o Emperium.         .
+// .	(1): Recebe o CharID que quebrou o Emperium.          .
+// .	(2): Recebe o CastleMap que foi dominado.             .
+// *..........................................................*
+function	script	TopEmperium	{
+
+	//================================================
+	//=	Top Emperium  Jogadores por Jogadores    =
+	//================================================
+	// Consulta no banco de dados de Top Emperium por Jogadores.
+	query_sql "SELECT `char_id` FROM `topemperium_players` WHERE `char_id`='" + getarg(1) + "' AND `status`='1'", .@TE_P_ID;
+	// Computação de conquista.
+	if( .@TE_P_ID )
+		query_sql "UPDATE `topemperium_player` SET `break`=`break`+'1' WHERE `char_id`='" + getarg(1) + "'";
+	else // Insere o Char no Banco de Dados.
+		query_sql "INSERT INTO `topemperium_player` VALUES (" + getarg(1) + ", 1, 1)";
+
+	//================================================
+	//=	     Top Emperium  por Clãns		 =
+	//================================================
+	// Consuta no banco de dados do Top Emperium por Clãns.
+	query_sql "SELECT `guild_id` FROM `topemperium_guilds` WHERE `guild_id`='" + getarg(0) + "' AND `status`='1'", .@TE_G_ID;
+	// Computação de conquista.
+	if( .@TE_G_ID )
+		query_sql "UPDATE `topemperium_guilds` SET `break`=`break`+'1' WHERE `guild_id`='" + getarg(0) + "'";
+	else // Insere o Clãn no Banco de Dados.
+		query_sql "INSERTO INTO `topemperium_guilds` VALUES (" + getarg(0) + ", 1, 1)";
+
+	//================================================
+	//=	Top Emperium Jogadores por Castelos      =
+	//================================================
+	// Consulta no banco de dados do Top Emperium de Jogadores por Castelos.
+	query_sql "SELECT `autoid`, `char_id`, `castle`, `break` FROM `topemperium_playerscastles` WHERE `char_id`='" + getarg(1) + "' AND `castle`='" + getarg(2) + "' AND `status`='1'", .@TE_PC_AID, .@TE_PC_CID, .@TE_PC_CAID;
+	// Computação de conquista.
+	if( .@TE_PC_AID )
+		query_sql "UPDATE FROM `topemperium_playerscastles` SET `break`=`break`+'1' WHERE `char_id`='" + getarg(1) + "' AND `castle`='" + getarg(2) + "'";
+	else // Insere o Jogador no Banco de Dados por Castelos.
+		query_sql "INSERT INTO `topemperium_playerscastles` (char_id, castle, break, status) VALUES (" + getarg(1) + ", '" + getarg(2) + "', 1, 1)";
+
+	//================================================
+	//=	  Top Emperium Clãns por Castelos        =
+	//================================================
+	// Consulta no banco de dados do Top Emperium de Clãns por Castelos.
+	query_sql "SELECT `autoid`, `guild_id`, `castle_id`, `break` FROM `topemperium_guildscastles` WHERE `guild_id`='" + getarg(0) + "' AND `castle`='" + getarg(2) + "' AND `status`='1'", .@TE_GC_AID, .@TE_GC_CID, .@TE_GC_CAID;
+	// Computação de conquista.
+	if( .@TE_GC_AID )
+		query_sql "UPDATE FROM `topemperium_guildscastles` SET `break`=`break`+'1' WHERE `guild_id`='" + getarg(0) + "' AND `castle_id`='" + getarg(2) + "'";
+	else // Insere o Clãn no Banco de Dados por Castelos.
+		query_sql "INSERT INTO `topemperium_guildscastles` (guild_id, castle, break, status) VALUES (" + getarg(0) + ", '" + getarg(2) + "', 1, 1)";
+
+	return true;
+}
+
+// .----------------------------------------------------------.
+// . 	  Boletim que mostra os Raking para os Jogadores      .
+// *..........................................................*
+prontera,150,150,5	script	Boletim Top Emperium#te	837,{
+
+	while(1)
+	{
+		mes "[Boletim: Top Emperium]";
+		mes "As Posições de Jogadores e Clãns";
+		mes "que participam das Guerras do Emperium se encontra nesse boletim.";
+		mes " ";
+		mes "- O que você deseja visualizar?";
+		next;
+		switch( select("- Top Jogadores.", "- Top Jogadores por Castelos.", "- Top Clãns.", "- Top Clãns por Castelos.","- Minha qualificação.", "- Saír.") )
+		{
+			case 1:
+				query_sql "SELECT `char_id`, `break` FROM `topemperium_players` WHERE `status`='1' ORDER BY `break` DESC", .@CharID, .@Break;
+
+				if( !getarraysize(.@CharID) )
+				{
+					mes "[Boletim: Top Emperium]";
+					mes "No momento não há registro de Jogadores no Top Jogadores.";
+					next;
+				}
+				else {
+
+					for( set .@i,0; .@i < getarraysize(.@CharID); set .@i, .@i + 1 )
+					{
+						mes "[Top Emperium: Jogadores]";
+						mes " ";
+						mes "Colocação: " + (.@i+1) + "/" - (getarraysize(.@CharID)-1);
+						mes " ";
+						mes "Jogador: " + callfunc("getCharName", .@CharID[.@i]);
+						mes " ";
+						mes "Conquistas: " + .@Break[.@i];
+						next;
+						if( (.@i+1) < getarraysize(.@CharID) )
+						{
+							switch( select("- Próximo.", "- Anterior.", "- Saír.") )
+							{
+								case 1: break;
+								case 2: set .@i, .@i - 2; break;
+								case 3: set .@i, getarraysize(.@CharID); break;
+							}
+						}
+					}
+				}
+				break;
+			case 2:
+				set .@loop, 1;
+				while( .@loop )
+				{
+					query_sql "SELECT `castle` FROM `topemperium_playerscastles` GROUP BY `castle`", .@Castles$;
+
+					if( !getarraysize(.@Castles$) )
+					{
+						mes "[Boletim: Top Emperium]";
+						mes "Nenhum castelo foi encontrado vinculado com os jogadores!";
+						next;
+					}
+					else {
+						mes "[Top Emperium: Jogadores por Castelos]";
+						mes "Índice de Castelos:";
+						next;
+						set .@menu$, "";
+						for( set .@i, 0; .@i < getarraysize(.@Castles$); set .@i, .@i + 1 )
+							set .@menu$, .@menu$+"- "+getcastlename(.@Castles$)+":";
+						set .@menu$, .@menu$+"- Saír.";
+						set .@choose, select(.@menu$)-1;
+						if( .@choose >= getarraysize(.@Castles$) )
+							set .@loop, 0;
+						else {
+							query_sql "SELECT `char_id`, `break` FROM `topemperium_playerscastles` WHERE `castle`='" + .@Castles$[.@choose] + "' ORDER BY `break` DESC", .@CharID, .@Break;
+
+							for( set .@i, 0; .@i < getarraysize(.@CharID); set .@i, .@i + 1 )
+							{
+								mes "[Top Emperium: Jogadores por Castelos]";
+								mes " ";
+								mes "Colocação: " + (.@i+1) + "/" - (getarraysize(.@CharID)-1);
+								mes " ";
+								mes "Jogador: " + callfunc("getCharName", .@CharID[.@i]);
+								mes " ";
+								mes "Conquistas: " + .@Break[.@i];
+								next;
+								if( (.@i+1) < getarraysize(.@CharID) )
+								{
+									switch( select("- Próximo.", "- Anterior.", "- Saír.") )
+									{
+										case 1: break;
+										case 2: set .@i, .@i - 2; break;
+										case 3: set .@i, getarraysize(.@CharID); break;
+									}
+								}
+							}
+						}
+					}
+				} // while2
+				break;
+			case 3:
+				query_sql "SELECT `guild_id`, `break` FROM `topemperium_guilds` WHERE `status`='1' ORDER BY `break` DESC", .@GuildID, .@Break;
+
+				if( !getarraysize(.@GuildID) )
+				{
+					mes "[Boletim: Top Emperium]";
+					mes "No momento não há registro de Jogadores no Top Jogadores.";
+					next;
+				}
+				else {
+
+					for( set .@i,0; .@i < getarraysize(.@GuildID); set .@i, .@i + 1 )
+					{
+						mes "[Top Emperium: Clãns]";
+						mes " ";
+						mes "Colocação: " + (.@i+1) + "/" - (getarraysize(.@GuildID)-1);
+						mes " ";
+						mes "Clãn: " + getguildname(.@GuildID[.@i]);
+						mes " ";
+						mes "Conquistas: " + .@Break[.@i];
+						next;
+						if( (.@i+1) < getarraysize(.@CharID) )
+						{
+							switch( select("- Próximo.", "- Anterior.", "- Saír.") )
+							{
+								case 1: break;
+								case 2: set .@i, .@i - 2; break;
+								case 3: set .@i, getarraysize(.@GuildID); break;
+							}
+						}
+					}
+				}
+				break;
+			case 4:
+				set .@loop, 1;
+				while( .@loop )
+				{
+					query_sql "SELECT `castle` FROM `topemperium_guildscastles` GROUP BY `castle`", .@Castles$;
+
+					if( !getarraysize(.@Castles$) )
+					{
+						mes "[Top Emperium: Clãns por Castelos]";
+						mes "Nenhum castelo foi encontrado vinculado com os clãns!";
+						next;
+					}
+					else {
+						mes "[Top Emperium: Clãns por Castelos]";
+						mes "Índice de Castelos:";
+						next;
+						set .@menu$, "";
+						for( set .@i, 0; .@i < getarraysize(.@Castles$); set .@i, .@i + 1 )
+							set .@menu$, .@menu$+"- "+getcastlename(.@Castles$)+":";
+						set .@menu$, .@menu$+"- Saír.";
+						set .@choose, select(.@menu$)-1;
+						if( .@choose >= getarraysize(.@Castles$) )
+							set .@loop, 0;
+						else {
+							query_sql "SELECT `guild_id`, `break` FROM `topemperium_guildscastles` WHERE `castle`='" + .@Castles$[.@choose] + "' ORDER BY `break` DESC", .@GuildID, .@Break;
+
+							for( set .@i, 0; .@i < getarraysize(.@GuildID); set .@i, .@i + 1 )
+							{
+								mes "[Top Emperium: Clãns por Castelos]";
+								mes " ";
+								mes "Colocação: " + (.@i+1) + "/" - (getarraysize(.@GuildID)-1);
+								mes " ";
+								mes "Castelo: " + getcastlename(.@Castles$[.@choose]);
+								mes " ";
+								mes "Clãn: " + getguildname(.@GuildID[.@i]);
+								mes " ";
+								mes "Conquistas: " + .@Break[.@i];
+								next;
+								if( (.@i+1) < getarraysize(.@GuildID) )
+								{
+									switch( select("- Próximo.", "- Anterior.", "- Saír.") )
+									{
+										case 1: break;
+										case 2: set .@i, .@i - 2; break;
+										case 3: set .@i, getarraysize(.@GuildID); break;
+									}
+								}
+							}
+						}
+					}
+				} // while2
+				break;
+			case 5:
+				query_sql "SELECT `char_id`, `break` FROM `topemperium_players` WHERE `status`='1' ORDER BY `break` DESC", .@CharID, .@Break;
+
+				for( set .@i, 0; .@i < getarraysize(.@CharID); set .@i, .@i + 1 )
+				{
+					if( .@CharID[.@i] == getcharid(0) )
+					{
+						set .@position, (.@i+1);
+						set .@pbreak, .@Break[.@i];
+					}
+				}
+
+				if( .@position )
+				{
+					mes "[Boletim: Qualificação Top Emperium]";
+					mes "Você está qualificado na " + .@position + "º posição com o total de " + .@pbreak + " conquistas.";
+					next;
+				}
+				else {
+					mes "[Boletim: Qualificação Top Emperium]";
+					mes "Você não está qualificado, para se qualificar você deve conquistar pelo menos 1 Emperium com o golpe da sua espada!";
+					next;
+				}
+				break;	
+			case 6:
+				mes "[Boletim: Top Emperium]";
+				mes "O Boletim é atualizado a todo momento e disponível a qualquer momento para você.";
+				close;
+		}// end switch1
+	}// end while1
+}
+
+// .----------------------------------------------------------.
+// . 	  	Fuções para suprir necessidades 	      .
+// .                                                          .
+// . Argumentos:                                              .
+// .	(0): ID do Personagem.                                .
+// *..........................................................*
+function	script	getCharName	{
+
+	query_sql "SELECT `name` FROM `char` WHERE `char_id`='" + getarg(0) + "'", .@Name$;
+
+	return (!.@Name$?"Desconhecido":.@Name$);
+}

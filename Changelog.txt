@@ -1,3 +1,5 @@
+	2013/10/16
+		* Iniciado o npc Top Emperium (SQL). [SoulBlaker]
 	2013/10/15
 		* Atualizações no npc Evento Noturno para prevenção de bugs. [SoulBlaker]
 			@ Mudanças estão sendo efetuada nos cabeçalho dos scripts para fins de melhorar resolução de changelog da versão, ignorem estes processos.
