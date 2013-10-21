@@ -14,14 +14,18 @@
 // . Script:                                                  .
 // .  Top Break                                               .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.0   .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.1   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
 // .  Testa quanto tempo o jogador leva para quebrar um       .
-// .  Emperium.						      .
+// .  Emperium.                                               .
 // .----------------------------------------------------------.
 // . Changelog da Versão:                                     .
-// .   - 1.0 Iniciado o NPC.	[SoulBlaker]                  .
+// .  * 1.0 [SoulBlaker]                                      .
+// .	- Iniciado o NPC.                                     .
+// .                                                          .
+// .  * 1.1 [SoulBlaker]                                      .
+// .    - Corrigido while para escolha de menu no npc.        .
 // *----------------------------------------------------------*
 prontera,164,163,3	script	Emperium Break#Warp	880,{
 
@@ -34,12 +38,12 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 	switch( select("- Testar tempo.", "- Top Break.", (getgmlevel()>=.@AdminLvl?"- Administração.":""), "^FF0000- Cancelar.^000000") )
 	{
 		case 1:
+			set .@m_1, 1;
 			while( .@m_1 )
 			{
 				mes "^006400[Emperium Break]^000000";
 				mes "Escolha uma sala para fazer o teste:";
 				next;
-				set .@m_1,1;
 				switch( select("- 1ª Sala ^FF0000[" + getmapusers("force_1-1") + "]/1]^000000", "- 2ª Sala ^FF0000[" + getmapusers("force_2-1") + "]/1]^000000", "- 3ª Sala ^FF0000[" + getmapusers("force_3-1") + "]/1]^000000",  "^FF0000- Cancelar.^000000" ) )
 				{
 					case 1:

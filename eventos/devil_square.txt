@@ -1,23 +1,32 @@
 // .----------------------------------------------------------.
-// .  		 SoulBlaker Scripts Apresenta:                .
-// .		    ___________________ 		      .
-// .		   /   _____/\______   \                      .
-// .		   \_____  \  |    |  _/		      .
-// .		   /        \ |    |   \		      .
-// .		  /_______  / |______  /		      .
-// .			  \/         \/		              .
-// .           	[ eAthena Advanced Scripts ]                  .
-// .							v1.0  .
+// .            SoulBlaker Scripts Apresenta:                 .
+// .                ___________________                       .
+// .               /   _____/\______   \                      .
+// .               \_____  \  |    |  _/                      .
+// .               /        \ |    |   \                      .
+// .              /_______  / |______  /                      .
+// .                      \/         \/                       .
+// .            [ Cronus Advanced Scripts ]                   .
+// .                                                    v1.1  .
 // .----------------------------------------------------------.
-// ;   http://www.eathena.ws/board/SoulBlaker-m271867.html    ;
+// ;  http://forum.cronus-emulator.com/user/20800-soulblaker  ;
 // .----------------------------------------------------------.
 // . Script:                                                  .
 // .  Devil Square                                            .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: eAthena SVN	 versão: 1.7  .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.8   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
-// .  Evento Devil Square, ocorre  de 1 a 1hr.                .
+// .  Evento Devil Square, ocorre de 1h em 1h.                .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .  * 1.7 [SoulBlaker]                                      .
+// .	- Trazido do eAthena na versão 1.7.                   .
+// .                                                          .
+// .  * 1.8 [SoulBlaker]                                      .
+// .    - Removido mapflag nogo que não há suporte mais.      .
+// *----------------------------------------------------------*
+// ;                  Changelog eAthena                       ;
 // .----------------------------------------------------------.
 // . Changelog da Versão:                                     .
 // .   - 1.0 Iniciado o NPC. [SoulBlaker]                     .
@@ -185,7 +194,6 @@ OnInit:
 	setmapflag "ordeal_1-1",mf_noteleport;
 	setmapflag "ordeal_1-1",mf_nowarp;
 	setmapflag "ordeal_1-1",mf_nowarpto;
-	setmapflag "ordeal_1-1",mf_nogo;
 	setmapflag "ordeal_1-1",mf_nomemo;
 
 	// Set Waiting Rom
@@ -410,7 +418,6 @@ OnTreasureDied:
 		removemapflag "ordeal_1-1",mf_nomemo;
 		removemapflag "ordeal_1-1",mf_noteleport;
 		removemapflag "ordeal_1-1",mf_nowarp;
-		removemapflag "ordeal_1-1",mf_nogo;
 		removemapflag "ordeal_1-1",mf_nowarpto;
 		removemapflag "ordeal_1-1",mf_nomemo;
 		removemapflag "ordeal_1-1",mf_noskill;
