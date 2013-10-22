@@ -1,3 +1,5 @@
+	2013/10/22
+		* Adicionado Evento Caçador. [SoulBlaker]
 	2013/10/21
 		* Corrigido while do npc Emperium Break, e removido mapflag nogo da DevilSquare. [SoulBlaker]
 	2013/10/16
