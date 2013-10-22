@@ -24,7 +24,7 @@
 // .  * 1.0 [SoulBlaker]                                      .
 // .	- Iniciado NPC.                                       .
 // *----------------------------------------------------------*
--	script	Arena de Caça#hunter_01::HunterArena	-1,{
+prontera,160,193,4	script	Arena de Caça#hunter_01::HunterArena	727,{
 
 	// Configurações dos itens de troca.
 	setarray .@item_id[0], 501, 502, 503;	// Id dos itens a ser trocado em array.
