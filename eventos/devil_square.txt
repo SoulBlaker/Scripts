@@ -46,7 +46,7 @@
 // .  - 1.7 Adicionado Suporte a um Monstro Assassino.        .
 // .        A pedidos de alguns Membros. [SoulBlaker]         .
 // *----------------------------------------------------------*
-prontera,156,300,5	script	Devil Square#devil_01	-1,{
+prontera,156,300,5	script	Devil Square#devil_01	599,{
 
 	// Configurações
 
