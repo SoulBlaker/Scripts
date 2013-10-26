@@ -1,4 +1,4 @@
-// .----------------------------------------------------------.
+﻿// .----------------------------------------------------------.
 // .            SoulBlaker Scripts Apresenta:                 .
 // .                ___________________                       .
 // .               /   _____/\______   \                      .
@@ -14,7 +14,7 @@
 // . Script:                                                  .
 // .  Top Break                                               .
 // .----------------------------------------------------------.
-// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.1   .
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2   .
 // .----------------------------------------------------------.
 // . Descrição:                                               .
 // .  Testa quanto tempo o jogador leva para quebrar um       .
@@ -26,6 +26,11 @@
 // .                                                          .
 // .  * 1.1 [SoulBlaker]                                      .
 // .    - Corrigido while para escolha de menu no npc.        .
+// .                                                          .
+// .  * 1.2 [SoulBlaker]                                      .
+// .	- Corrigido todos os bugs.			      .
+// .	  @Não dá mais suporte a edição no raking, somente    .
+// .	  reseta e adicionado mapflags.                       .
 // *----------------------------------------------------------*
 prontera,164,163,3	script	Emperium Break#Warp	880,{
 
@@ -44,7 +49,7 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 				mes "^006400[Emperium Break]^000000";
 				mes "Escolha uma sala para fazer o teste:";
 				next;
-				switch( select("- 1ª Sala ^FF0000[" + getmapusers("force_1-1") + "]/1]^000000", "- 2ª Sala ^FF0000[" + getmapusers("force_2-1") + "]/1]^000000", "- 3ª Sala ^FF0000[" + getmapusers("force_3-1") + "]/1]^000000",  "^FF0000- Cancelar.^000000" ) )
+				switch( select("- 1ª Sala ^FF0000[" + getmapusers("force_1-1") + "/1]^000000", "- 2ª Sala ^FF0000[" + getmapusers("force_2-1") + "/1]^000000", "- 3ª Sala ^FF0000[" + getmapusers("force_3-1") + "/1]^000000",  "^FF0000- Cancelar.^000000" ) )
 				{
 					case 1:
 						if( getmapusers("force_1-1") )
@@ -58,7 +63,7 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 							mes "Muito bem, boa sorte com seu teste!";
 							close2;
 
-							if( !getmapusers("foce_1-1") )
+							if( !getmapusers("force_1-1") )
 							{
 								warp "force_1-1", 174, 26;
 								if( mobcount("force_1-1", "all") ) killmonsterall "force_1-1";
@@ -80,7 +85,7 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 							mes "Muito bem, boa sorte com seu teste!";
 							close2;
 
-							if( !getmapusers("foce_2-1") )
+							if( !getmapusers("force_2-1") )
 							{
 								warp "force_2-1", 174, 26;
 								if( mobcount("force_2-1", "all") ) killmonsterall "force_2-1";
@@ -102,7 +107,7 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 							mes "Muito bem, boa sorte com seu teste!";
 							close2;
 
-							if( !getmapusers("foce_3-1") )
+							if( !getmapusers("force_3-1") )
 							{
 								warp "force_3-1", 174, 26;
 								if( mobcount("force_3-1", "all") ) killmonsterall "force_3-1";
@@ -120,10 +125,10 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 			break;
 		case 2:
 			mes "^006400[Emperium Break: Top Break]^000000";
-			if( $eb_rank[0] )
+			if( $eb_char_timer > 0 )
 			{
-				mes "^FF0000Jogador:^000000 " + $eb_rank$[0];
-				mes "^FF0000Tempo:^000000 " + ($eb_rank$[1]/1000) + " ^FF000000(seg)^000000";
+				mes "^FF0000Jogador:^000000 " + $eb_char_name$;
+				mes "^FF0000Tempo:^000000 " + ($eb_char_timer<60?$eb_char_timer:($eb_char_timer/60)) + " ^FF0000(" + ($eb_char_timer<60?"seg":"min") + ")^000000";
 			} 
 			else {
 				mes "Nínguem quebrou o Emperium ainda!";
@@ -134,7 +139,7 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 			mes "^006400[Emperium Break]^000000";
 			mes "Muito bem, o que deseja?";
 			next;
-			switch( select("- Mudar o valor cobrado para invocar o Emperium.","- Resetar Top Break.", "- Alterar Top Break.", "- Cancelar.") )
+			switch( select("- Mudar o valor cobrado para invocar o Emperium.","- Resetar Top Break.", "- Cancelar.") )
 			{
 				case 1:
 					while(1)
@@ -151,13 +156,14 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 						}
 						else {
 							mes "^006400[Emperium Break]^000000";
-							mes "Realmente deseja cobrar ^FF0000" + .@z + "^0000 Zenys?";
+							mes "Realmente deseja cobrar ^FF0000" + .@z + "^000000 Zenys?";
 						}
 
+						next;
 						switch( select("- Sim.", "- Não, tentar novamente!", "- Cancelar." ) )
 						{
 							case 1:
-								set $eb_rank$[2], .@z;
+								set $eb_zeny, .@z;
 								mes "^006400[Emperium Break]^000000";
 								mes "A cobrança para invocar um Emperium foi atualizada com sucesso!";
 								close;
@@ -175,7 +181,8 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 					next;
 					if( select("- Sim.", "- Não.") == 1 )
 					{
-						setarray $eb_rank$[0], 0, 0;
+						set $eb_char_timer, 0;
+						set $eb_cnar_name$, "";
 						mes "^006400[Emperium Break]^000000";
 						mes "O Top Break foi resetado com sucesso!";
 						close;
@@ -185,130 +192,87 @@ prontera,164,163,3	script	Emperium Break#Warp	880,{
 					mes "Tudo bem, volte quando desejar resetar o Top Break.";
 					close;
 				case 3:
-					while(1)
-					{
-						mes "^006400[Emperium Break]^000000";
-						mes "Digite o Nome que você deseja para o Top Break!";
-						next;
-						input .@Name$;
-
-						if( .@Name$ )
-						{
-							set .@l_1, 1;
-							while( .@l_1 )
-							{
-								mes "^006400[Emperium Break]^000000";
-								mes "Digite o tempo em milisegundos para que apareça no Top Break!";
-								mes "Ou seja 1000 = 1seg.";
-								mes "Esse é o valor minimo!";
-								next;
-								input .@timer;
-
-								if( .@timer >= 1000 )
-								{
-									mes "^006400[Emperium Break]^000000";
-									mes "Deseja o Top Break seja modificado para as seguintes modificações?";
-									mes " ";
-									mes "Jogador: " + .@Name$;
-									mes "Tempo: " + .@timer + " = " + (.@timer/1000) + "(seg)";
-									next;
-									switch( select("- Sim.", "- Não, quero mudar.", "- Cancelar." ) )
-									{
-										case 1:
-											setarray $eb_rank$[0], .@Name$, .@timer;
-											mes "^006400[Emperium Break]^000000";
-											mes "O Top Break foi alterado com sucesso!";
-											close;
-										case 2:
-											set .@l_1, 0;
-											break;
-										case 3:
-											mes "^006400[Emperium Break]^000000";
-											mes "Tudo bem, volte quando desejar alterar o Top Break.";
-											close;
-									}
-								}
-							}
-						}
-					}
-				case 4:
 					mes "^006400[Emperium Break]^000000";
 					mes "Tudo bem, volte quando desejar alterar alguma configuração do Emperium Break!";
 					close;
 			}			
 		case 4:
-			mes "^006400[Emperium Break]^000000";
-			mes "Tudo bem, volte quando estiver pronto para fazer o teste!";
-			close;
-			
+			break;
 	}
+
+	mes "^006400[Emperium Break]^000000";
+	mes "Tudo bem, volte quando estiver pronto para fazer o teste!";
+	close;
 }
 
 -	script	Emperium Break#monster::EmperiumBreak	-1,{
 
 OnStartFirst:
-	monster "force_1-1", 174, 26, "Emperium Break", 1288, 1, "EmperiumBreak::OnEndFirst";
+	monster "force_1-1", 174, 26, "Emperium Break 01", 1288, 1, "EmperiumBreak::OnEndFirst";
 	set $@eb_timer_break01, gettimetick(2);
 	end;
 
 OnEndFirst:
 	set $@eb_timer_break01, gettimetick(2) - $@eb_timer_break01;
 
-	if( $@eb_timer_break01 < $eb_rank$[1] )
+	if( $@eb_timer_break01 < 216000 && $@eb_timer_break01 < $eb_char_timer )
 	{
-		announce "[Emperium Break]: " + strcharinfo(0) + " superou o tempo de " + ($eb_rank$[0]/1000) + " em " + ($@eb_timer_break01/1000) + " minutos!", 8;
-		setarray $eb_rank$[0], strcharinfo(0), $@eb_timer_break01;
-	}
-	else {
-		// Informa ao jogador em quantos segundos ele quebrou o emperium.
-		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break01/1000) + " minutos.";
-	}
+		announce "[Emperium Break]: " + strcharinfo(0) + " superou o tempo no Top Break em " + ($@eb_timer_break_01<60?$@eb_timer_break01:($@eb_timer_break01/60)) + " " + ($@eb_timer_break01<60?"segundos":"minutos") + "!", 8;
 
+		set $eb_char_timer, $@eb_timer_break01;
+		set $eb_char_name$, strcharinfo(0);
+	}
+	else if( $@eb_timer_break01 < 216000 )
+		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break_01<60?$@eb_timer_break01:($@eb_timer_break01/60)) + " " + ($@eb_timer_break01<60?"segundos":"minutos") + ".";
+	else
+		dispbottom "[Emperium Break]: Seu tempo não foi bom, não sendo qualificado em nosso Top Break!";
 	end;
 
 OnStartSecond:
-	monster "force_2-1", 174, 26, "Emperium Break", 1288, 1, "EmperiumBreak::OnEndSecond";
+	monster "force_2-1", 174, 26, "Emperium Break 02", 1288, 1, "EmperiumBreak::OnEndSecond";
 	set $@eb_timer_break02, gettimetick(2);
 	end;
 
 OnEndSecond:
 	set $@eb_timer_break02, gettimetick(2) - $@eb_timer_break02;
 
-	if( $@eb_timer_break02 < $eb_rank$[1] )
+	if( $@eb_timer_break02 < 216000 && $@eb_timer_break02 < $eb_char_timer )
 	{
-		announce "[Top Break]: " + strcharinfo(0) + " superou o tempo de " + ($eb_rank$[0]/1000) + " em " + ($@eb_timer_break02/1000) + " minutos!", 8;
-		setarray $eb_rank$[0], strcharinfo(0), $@eb_timer_break02;
-	}
-	else {
-		// Informa ao jogador em quantos segundos ele quebrou o emperium.
-		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break02/1000) + " minutos.";
-	}
+		announce "[Emperium Break]: " + strcharinfo(0) + " superou o tempo no Top Break em " + ($@eb_timer_break_02<60?$@eb_timer_break02:($@eb_timer_break02/60)) + " " + ($@eb_timer_break02<60?"segundos":"minutos") + "!", 8;
 
+		set $eb_char_timer, $@eb_timer_break02;
+		set $eb_char_name$, strcharinfo(0);
+	}
+	else if( $@eb_timer_break02 < 216000 )
+		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break_02<60?$@eb_timer_break01:($@eb_timer_break02/60)) + " " + ($@eb_timer_break02<60?"segundos":"minutos") + ".";
+	else
+		dispbottom "[Emperium Break]: Seu tempo não foi bom, não sendo qualificado em nosso Top Break!";
 	end;
 
 OnStartThird:
-	monster "force_3-1", 174, 26, "Emperium Break", 1288, 1, "EmperiumBreak::OnEndThird";
+	monster "force_3-1", 174, 26, "Emperium Break 03", 1288, 1, "EmperiumBreak::OnEndThird";
 	set $@eb_timer_break03, gettimetick(2);
 	end;
 
 OnEndThird:
 	set $@eb_timer_break03, gettimetick(2) - $@eb_timer_break03;
 
-	if( $@eb_timer_break03 < $eb_rank$[1] )
+	if( $@eb_timer_break03 < 216000 && $@eb_timer_break03 < $eb_char_timer )
 	{
-		announce "[Top Break]: " + strcharinfo(0) + " superou o tempo de " + ($eb_rank$[0]/1000) + " em " + ($@eb_timer_break03/1000) + " minutos!", 8;
-		setarray $eb_rank$[0], strcharinfo(0), $@eb_timer_break03;
+		announce "[Emperium Break]: " + strcharinfo(0) + " superou o tempo no Top Break em " + ($@eb_timer_break_03<60?$@eb_timer_break01:($@eb_timer_break03/60)) + " " + ($@eb_timer_break03<60?"segundos":"minutos") + "!", 8;
+
+		set $eb_char_timer, $@eb_timer_break03;
+		set $eb_char_name$, strcharinfo(0);
 	}
-	else {
-		// Informa ao jogador em quantos segundos ele quebrou o emperium.
-		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break03/1000) + " minutos.";
-	}
+	else if( $@eb_timer_break03 < 216000 )
+		dispbottom "[Emperium Break]: Você quebrou o Emperium em " + ($@eb_timer_break_03<60?$@eb_timer_break03:($@eb_timer_break03/60)) + " " + ($@eb_timer_break03<60?"segundos":"minutos") + ".";
+	else
+		dispbottom "[Emperium Break]: Seu tempo não foi bom, não sendo qualificado em nosso Top Break!";
 	end;
 }
 
 force_1-1,166,26,2	script	Treinador#ceb_01::TreinadorEBreak	106,{
 
-	set .@ZenyCost, $eb_rank$[2]; // Zenys a ser cobrados!
 	if( strnpcinfo(2) == "ceb_01" )
 		set .@type, 1;
 	else if( strnpcinfo(2) == "ceb_02" )
@@ -343,47 +307,50 @@ force_1-1,166,26,2	script	Treinador#ceb_01::TreinadorEBreak	106,{
 					set $@eb_timer_break03, 0;
 				}
 
-				mes "[Treinador]";
+				mes "^006400[Treinador]^000000";
 				mes "Tudo bem, removi de lá para você!";
 				next;
 				break;
 			case 2:
-				mes "[Treinador]";
+				mes "^006400[Treinador]^000000";
 				mes "Tudo bem, não perca mais tempo!!";
 				close;
 		}
 	}
 	else {
-		mes "[Treinador]";
-		mes "Olá, seu último resultado foi de:";
+		if( (.@type == 1 &&  ($@eb_timer_break01 > 0 && $@eb_timer_break01 < 216000)) || (.@type == 2 &&  ($@eb_timer_break02 > 0 && $@eb_timer_break02 < 216000)) || (.@type == 3 &&  ($@eb_timer_break03 > 0 && $@eb_timer_break03 < 216000)) )
+		{
+			mes "^006400[Treinador]^000000";
+			mes "Olá, seu último resultado foi de:";
 
-		if( .@type == 1 )
-			mes ($@eb_timer_break01/1000) + " minutos.";
-		else if( .@type == 2 )
-			mes ($@eb_timer_break02/1000) + " minutos.";
-		else if( .@type == 3 )
-			mes ($@eb_timer_break03/1000) + " minutos.";
-		next;
+			if( .@type == 1 )
+				mes ($@eb_timer_break_01<60?$@eb_timer_break01:($@eb_timer_break01/60)) + " "+($@eb_timer_break01<60?"segundos.":"minutos.");
+			else if( .@type == 2 )
+				mes ($@eb_timer_break_02<60?$@eb_timer_break01:($@eb_timer_break02/60)) + " "+($@eb_timer_break02<60?"segundos.":"minutos.");
+			else if( .@type == 3 )
+				mes ($@eb_timer_break_03<60?$@eb_timer_break01:($@eb_timer_break03/60)) + " "+($@eb_timer_break03<60?"segundos.":"minutos.");
+			next;
+		}
 	}
 
 	mes "^006400[Treinador]^000000";
 	mes "Eu posso invocar um Emperium novo para você testar o tempo que você gasta para quebrá-lo!";
-	if( .@ZenyCost && .@ZenyCost < Zeny ) mes "Mais são nescessário ^FF0000" + .@ZenyCost + "^000000 Zenys para criar um.";
-	else if( .@ZenyCost && Zeny < .@ZenyCost )
+	if( $eb_zeny && $eb_zeny < Zeny ) mes "Mais são nescessário ^FF0000" + $eb_zeny + "^000000 Zenys para criar um.";
+	else if( $eb_zeny && Zeny < $eb_zeny )
 	{
-		mes "Mais você não possue ^FF0000" + .@ZenyCost + "^000000 Zenys nescessário para invocar um Emperium!";
-		close;
+		mes "Mais você não possue ^FF0000" + $eb_zeny + "^000000 Zenys nescessário para invocar um Emperium!";
+		mes "Deseja saír da sala?";
 	}
-	mes "Deseja que eu invoque um para você?";
+	else mes "Deseja que eu invoque um para você?";
 	next;
-	switch( select("- Sim, por favor.", "- Não espere um momento.", "- Saír da Sala." ) )
+	switch( select((Zeny>=$eb_zeny?"- Sim, por favor.":""), "- Não espere um momento.", "- Saír da Sala." ) )
 	{
 		case 1:
 			mes "^006400[Treinador]^000000";
 			mes "Muito bem, vou invocar o Emperium agora!";
 			close2;
 			// Invocando o Emperium!
-			if( .@ZenyCost ) set Zeny, Zeny - .@ZenyCost;
+			if( $eb_zeny ) set Zeny, Zeny - $eb_zeny;
 			if( .@type == 1 )
 				donpcevent "EmperiumBreak::OnStartFirst";
 			else if( .@type == 2 )
@@ -395,8 +362,45 @@ force_1-1,166,26,2	script	Treinador#ceb_01::TreinadorEBreak	106,{
 			mes "^006400[Treinador]^000000";
 			mes "Tudo bem, volte quando desejar invocar um Emperium!";
 			close;
+		case 3:
+			mes "^006400[Treinador]^000000";
+			mes "Tudo bem, volte quando desejar invocar um Emperium!";
+			close2;
+			if( .@type == 1 )
+			{
+				killmonsterall "force_1-1";
+				set $@eb_timer_break01, 0;
+			} else if( .@type == 2 )
+			{
+				killmonsterall "force_2-1";
+				set $@eb_timer_break02, 0;
+			} else if( .@type == 3 )
+			{
+				killmonsterall "force_3-1";
+				set $@eb_timer_break03, 0;
+			}
+
+			warp "prontera", 154, 175;
+			end;
 	}
 }
 
-force_1-1,166,26,2	duplicate(TreinadorEBreak)	Treinador#ceb_02	106
-force_2-1,166,26,2	duplicate(TreinadorEBreak)	Treinador#ceb_03	106
+force_2-1,166,26,5	duplicate(TreinadorEBreak)	Treinador#ceb_02	106
+force_3-1,166,26,5	duplicate(TreinadorEBreak)	Treinador#ceb_03	106
+
+// Mapflags
+force_1-1	mapflag	nowarp
+force_1-1	mapflag	nowarpto
+force_1-1	mapflag	noteleport
+force_1-1	mapflag	nosave
+force_1-1	mapflag	nomemo
+force_2-1	mapflag	nowarp
+force_2-1	mapflag	nowarpto
+force_2-1	mapflag	noteleport
+force_2-1	mapflag	nosave
+force_2-1	mapflag	nomemo
+force_3-1	mapflag	nowarp
+force_3-1	mapflag	nowarpto
+force_3-1	mapflag	noteleport
+force_3-1	mapflag	nosave
+force_3-1	mapflag	nomemo

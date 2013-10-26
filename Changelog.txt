@@ -1,3 +1,6 @@
+﻿	2013/10/26
+		* Correções no Emperium Break. [SoulBlaker]
+			- Script testado e estável.
 	2013/10/22
 		* Adicionado Evento Caçador. [SoulBlaker]
 	2013/10/21
