@@ -1,0 +1,550 @@
+// .----------------------------------------------------------.
+// .            SoulBlaker Scripts Apresenta:                 .
+// .                ___________________                       .
+// .               /   _____/\______   \                      .
+// .               \_____  \  |    |  _/                      .
+// .               /        \ |    |   \                      .
+// .              /_______  / |______  /                      .
+// .                      \/         \/                       .
+// .            [ Cronus Advanced Scripts ]                   .
+// .                                                    v1.1  .
+// .----------------------------------------------------------.
+// ;  http://forum.cronus-emulator.com/user/20800-soulblaker  ;
+// .----------------------------------------------------------.
+// . Script:                                                  .
+// .  Evento Arena PvP                                        .
+// .----------------------------------------------------------.
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.0   .
+// .----------------------------------------------------------.
+// . Descrição:                                               .
+// .  Ranking PvP                                             .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .  * 1.0 [SoulBlaker]                                      .
+// .	- Iniciado NPC.                                       .
+// *----------------------------------------------------------*
+prontera,146,186,5	script	Arena de Batalhas#ab_01::PvPArenaEvent	603,{
+
+	set .@admin_lvl, 99;
+
+	set .@m_1, 1;
+	while(.@m_1)
+	{
+		mes "^FF0000[Recepcionista]^000000";
+		mes "Bem-vindo a ^0000FFArena PvP^000000!";
+		if( $@pvp_flag == 1 ) mes "^0000FFO Evento PvP está aberto, você pode ganhar pontos participando.^000000";
+		else if( $@pvp_flag == 2 ) mes "^FF0000No momento o Evento PvP está ocorrendo, você pode ganhar pontos participando.^000000";
+		mes "Deseja entrar em alguma ^0000FFArena PvP^000000?";
+		next;
+		switch( select((getgmlevel()>=.@admin_lvl?"^0000FF- Administrar Eventos.^000000":""), ($@pvp_flag==1?"^0000FF- Entrar no Evento Player vs Player.^000000":""), ($@gvg_flag==1?"^0000FF- Entrar no Evento Guild vs Guild.^000000":""), "- Arenas Global.", "- Arenas de Clãns.", "^0000FF- Informações sobre o Evento.^000000", "^FF0000- Saír.^000000") )
+		{
+			case 1:
+				mes "^FF0000[Recepcionista]^000000";
+				mes "Qual operação deseja fazer?";
+				next;
+				switch( select(($@pvp_flag?"- Desligar Evento Player vs Player.":"- Íniciar Evento Player vs Player."), ($@gvg_flag?"- Desligar Evento Guild vs Guild.":"- Íniciar Evento Guild vs Guild."), "^FF0000- Voltar.^000000", "^FF0000- Saír.^000000") )
+				{
+					case 1:
+						if( $@pvp_flag )
+						{
+							mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+							mes "Deseja desligar o Evento Player vs Player?";
+							next;
+							if( select("- Sim.", "- Não.") == 1 )
+							{
+								donpcevent "PvPArenaEvent::OnEndArena2";
+
+								mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+								mes "O Evento foi desligado com sucesso!";
+								next;
+							}
+						}
+						else {
+							mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+							mes "Deseja iniciar o ^0000FFEvento Player vs Player^000000?";
+							next;
+							if( select("- Sim.", "- Não.") == 1 )
+							{
+								donpcevent "PvPArenaEvent::OnStartArena2";
+
+								mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+								mes "O Evento foi ligado com sucesso!";
+								next;
+							}
+						}
+
+						break;
+					case 2:
+						if( $@gvg_flag )
+						{
+							mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+							mes "Deseja desligar o ^0000FFEvento Guild vs Guild^000000?";
+							next;
+							if( select("- Sim.", "- Não.") == 1 )
+							{
+								donpcevent "GvGArenaEvent::OnEndArena2";
+
+								mes "^FF0000[Recepcionista: Guild vs Guild]^000000";
+								mes "O Evento foi desligado com sucesso!";
+								next;
+							}
+						}
+						else {
+							mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+							mes "Deseja iniciar o ^0000FFEvento Guild vs Guild^000000?";
+							next;
+							if( select("- Sim.", "- Não.") == 1 )
+							{
+								donpcevent "GvGArenaEvent::OnStartArena2";
+
+								mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+								mes "O Evento foi ligado com sucesso!";
+								next;
+							}
+						}
+
+						break;
+					case 3:
+						break;
+					case 4:
+						set .@m_1, 0;
+						break;
+				}
+				break;
+			case 2:
+				if( $@pvp_flag != 1 )
+				{
+					mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+					mes "Me desculpe, mais a arena não está aberta.";
+					mes "Volte mais tarde!";
+					close;
+				}
+
+				mes "^FF0000[Recepcionista: Evento Player vs Player]^000000";
+				mes "Tudo bem, vou te mandar para lá!";
+				close2;
+				warp "pvp_n_1-5", 0, 0;
+				end;
+			case 3:
+				if( $@gvg_flag != 1 )
+				{
+					mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+					mes "Me desculpe, mais a arena não está aberta.";
+					mes "Volte mais tarde!";
+					close;
+				}
+
+				if( !getcharid(2) )
+				{
+					mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+					mes "Você deve fazer parte de um ^0000FFClãn^000000 para participar desse ^0000FFEvento^000000!";
+					next;
+					break;
+				}
+
+				mes "^FF0000[Recepcionista: Evento Guild vs Guild]^000000";
+				mes "Tudo bem, vou te mandar para lá!";
+				close2;
+				warp "guild_vs2", 0, 0;
+				end;
+			case 4:
+				set .@m_2, 1;
+				while(.@m_2)
+				{
+					mes "^FF0000[Recepcionista: Arena de Jogadores]^000000";
+					mes "Em qual ^0000FFArena de Jogadores^000000 você deseja entrar?";
+					next;
+					switch( select("- 1ª Arena de Jogadores [^FF0000" + getmapusers("pvp_n_2-5") + "/30^000000] jogadores.", "- 2ª Arena de Jogadores [^FF0000" + getmapusers("pvp_n_2-3") + "/30^000000] jogadores.", "- 3ª Arena de Jogadores [^FF0000" + getmapusers("pvp_n_2-1") + "/30^000000] jogadores.", "^FF0000- Voltar.^000000", "^FF0000- Saír.^000000") )
+					{
+						case 1: callsub subWarp, "Jogadores", 1, "pvp_n_2-5", 0, 0, 30; break;
+						case 2: callsub subWarp, "Jogadores", 2, "pvp_n_2-3", 0, 0, 30; break;
+						case 3: callsub subWarp, "Jogadores", 3, "pvp_n_2-1", 0, 0, 30; break;
+						case 4: set .@m_2, 0; break;
+						case 5: set .@m_1, 0; set .@m_2, 0; break;
+					}
+				}
+				break;
+			case 5:
+				set .@m_2, 1;
+				while(.@m_2)
+				{
+					if( !getcharid(2) )
+					{
+						mes "^FF0000[Recepcionista: Arena de Clãns]^000000";
+						mes "Você deve fazer parte de um ^0000FFClãn^000000 para participar dessa ^0000FFArena^000000!";
+						next;
+						set .@m_2, 0;
+						break;
+					}
+
+					mes "^FF0000[Recepcionista: Arena de Clãns]^000000";
+					mes "Em qual ^0000FFArena de Clãns^000000 você deseja entrar?";
+					next;
+					switch( select("- 1ª Arena de Clãns [^FF0000" + getmapusers("guild_vs1") + "/30^000000] jogadores.", "- 2ª Arena de Clãns [^FF0000" + getmapusers("guild_vs4") + "/30^000000] jogadores.", "- 3ª Arena de Clãns [^FF0000" + getmapusers("guild_vs3") + "/30^000000] jogadores.", "^FF0000- Voltar.^000000", "^FF0000- Saír.^000000") )
+					{
+						case 1: set .@rand, rand(0,3); setarray .@gmapx[0], 51, 8, 50, 92; setarray .@gmapy[0], 91, 50, 7, 49; callsub subWarp, "Clãns", 1, "guild_vs1", .@gmapx[.@rand], .@gmapy[.@rand], 30; break;
+						case 2: set .@rand, rand(0,3); setarray .@gmapx[0], 51, 8, 50, 92; setarray .@gmapy[0], 91, 50, 7, 49; callsub subWarp, "Clãns", 2, "guild_vs4", .@gmapx[.@rand], .@gmapy[.@rand], 30; break;
+						case 3: set .@rand, rand(0,3); setarray .@gmapx[0], 17, 49, 83, 83; setarray .@gmapy[0], 51, 85, 51, 51; callsub subWarp, "Clãns", 3, "guild_vs3", .@gmapx[.@rand], .@gmapy[.@rand], 30; break;
+						case 4: set .@m_2, 0; break;
+						case 5: set .@m_1, 0; set .@m_2, 0; break;
+					}
+				}
+				break;
+			case 6:
+				break;
+			case 7:
+				set .@m_1, 0;
+				break;
+		}
+	}
+
+	mes "^FF0000[Recepcionista]^000000";
+	mes "Volte quando desejar batalhar com outros jogadores!";
+	close;
+
+subWarp:
+	if( getmapusers(getarg(2)) > getarg(5) )
+	{
+		mes "^0000FF[Recepcionista: " + getarg(0) + "]^000000";
+		mes "A ^0000FF " + getarg(1) + " Arena de " + getarg(0) + "^000000 está lotada, escolha outra ^0000FFArena^000000!";
+		next;
+		return;
+	}
+
+	mes "^0000FF[Recepcionista: " + getarg(0) + "]^000000";
+	mes "Tudo bem, vou te mandar para  ^0000FF " + getarg(1) + " Arena " + getarg(0) + "^000000!";
+	close2;
+	if( getmapusers(getarg(2)) > getarg(5) )
+		dispbottom "Você demorou para entrar na " + getarg(1) + " Arena de " + getarg(0) + ", outro jogador ocupou o seu lugar!";
+	else
+		warp getarg(2), getarg(3), getarg(4);
+	end;
+
+OnStartArena2:
+OnMinute00:
+	if( !$@pvp_flag )
+		donpcevent "PvPArenaEvent::OnStartArena";
+	end;
+
+OnStartArena:
+	announce "[Arena de Batalhas]: O Evento Player vs Player irá começar em 5 minutos, corram para a arena!",bc_all,"0x00FF00";
+	waitingroom "Aberto Arena Evento PvP.", 0;
+	removemapflag "pvp_n_1-5", mf_pvp;
+	set $@pvp_clock, 4;
+	set $@pvp_flag, 1;
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	// Iniciando o Evento Arena PVP.
+	if( !$@pvp_clock )
+	{
+		if( getmapusers("pvp_n_1-5") > 1 )
+		{
+			announce "[Arena de Batalhas]: A arena está fechado, aqueles que não tiveram oportunidade podem tentar na próxima vez!", bc_all,"0x00FF00";
+			mapannounce "pvp_n_1-5", "[Arena de Batalhas]: Boa luta participantes!",bc_all,"0x00FF00";
+
+			// MapFlags
+			setmapflag "pvp_n_1-5", mf_pvp;
+			setmapflag "pvp_n_1-5", mf_noteleport;
+			setmapflag "pvp_n_1-5", mf_nomemo;
+			setmapflag "pvp_n_1-5", mf_nosave;
+			setmapflag "pvp_n_1-5", mf_nowarp;
+			setmapflag "pvp_n_1-5", mf_nowarpto;
+			setmapflag "pvp_n_1-5", mf_loadevent;
+			delwaitingroom;
+			set $@pvp_flag, 2;
+		}
+		else {
+			announce "[Arena de Batalhas]: O Evento Player vs Player foi cancelado por não haver nenhum jogador na arena!",bc_all,"0x00FF00";
+			set $@pvp_flag, 0;
+		}
+
+		stopnpctimer;
+	}
+	else {
+		announce "[Arena de Batalhas]: O Evento Player vs Player irá começar em " + $@pvp_clock + " minutos, corram para a arena!",bc_all,"0x00FF00";
+		set $@pvp_clock, $@pvp_clock - 1;
+		setnpctimer 0;
+	}
+
+	end;
+
+OnEndArena2:
+	announce "[Arena de Batalhas]: O Evento Player vs Player foi cancelado!",bc_all,"0x00FF00";
+	delwaitingroom;
+	if( $@pvp_flag == 1 ) stopnpctimer;
+OnEndArena:
+	removemapflag "pvp_n_1-5", mf_pvp;
+	removemapflag "pvp_n_1-5", mf_noteleport;
+	removemapflag "pvp_n_1-5", mf_nomemo;
+	removemapflag "pvp_n_1-5", mf_nosave;
+	removemapflag "pvp_n_1-5", mf_nowarp;
+	removemapflag "pvp_n_1-5", mf_nowarpto;
+	removemapflag "pvp_n_1-5", mf_loadevent;
+	mapwarp "pvp_n_1-5", "prontera", 154, 175;
+	set $@pvp_flag, 0;
+	end;
+
+OnPCKillEvent:
+	getmapxy .@map$, .@x, .@y, 0;
+	if( .@map$ == "pvp_n_2-1" || .@map$ == "pvp_n_2-3" || .@map$ == "pvp_n_2-5" || .@map$ == "pvp_n_1-5" )
+		callfunc "TopRakingPvP", 0, getcharid(0), Class, 0;
+	else if( .@map$ == "guild_vs1" || .@map$ == "guild_vs4" || .@map$ == "guild_vs3" || .@map$ == "guild_vs2" )
+	{
+		callfunc "TopRakingPvP", 0, getcharid(0), Class, 0;
+		callfunc "TopRakingPvP", 1, getcharid(2), 0;
+	}
+
+	if( $@pvp_flag == 2 && .@map$ == "pvp_n_1-5" ) {
+		sleep2(5000);
+		if( getmapusers("pvp_n_1-5") == 1 )
+		{
+			announce "[Arena de Batalhas]: O Evento Player vs Player terminou, o vencedor foi [" + strcharinfo(0) + "]!",bc_all,"0x00FF00";
+			donpcevent "PvPArenaEvent::OnEndArena";
+		}
+	}
+
+	if( $@gvg_flag == 2 && .@map$ == "guild_vs2" ) {
+		sleep2(5000);
+		if( getmapusers("guild_vs2") == 1 )
+		{
+			announce "[Arena de Batalhas]: O Evento Guild vs Guild terminou, o vencedor foi o Clãn [" + getguildname(getcharid(2)) + "]!",bc_all,"0x00FF00";
+			donpcevent "GvGArenaEvent::OnEndArena";
+		}
+	}
+
+	end;
+
+OnPCDieEvent:
+	getmapxy .@map$, .@x, .@y, 0;
+	if( .@map$ == "pvp_n_2-1" || .@map$ == "pvp_n_2-3" || .@map$ == "pvp_n_2-5" || .@map$ == "pvp_n_1-5" )
+		callfunc "TopRakingPvP", 0, getcharid(0), Class, 1;
+	else if( .@map$ == "guild_vs1" || .@map$ == "guild_vs4" || .@map$ == "guild_vs3" || .@map$ == "guild_vs" )
+	{
+		callfunc "TopRakingPvP", 0, getcharid(0), Class, 1;
+		callfunc "TopRakingPvP", 1, getcharid(2), 1;
+	}
+
+	if( $@pvp_flag  == 2 && .@map$ == "pvp_n_1-5" )
+	{
+		mapannounce "pvp_n_1-5", "[Arena de Batalhas]: O jogador [" + strcharinfo(0) + "] foi derrotado por [" + rid2name(killerrid) + "]!",bc_all,"0x00FF00";
+		sleep2(2000);
+		warp "prontera", 0, 0;
+	}
+
+	if( $@gvg_flag  == 2 && .@map$ == "guild_vs2" )
+	{
+		mapannounce "guild_vs2", "[Arena de Batalhas]: O jogador [" + strcharinfo(0) + "] foi derrotado por [" + rid2name(killerrid) + "]!",bc_all,"0x00FF00";
+		sleep2(2000);
+		warp "prontera", 0, 0;
+	}
+
+	end;
+
+OnPCLogoutEvent:
+OnPCLoadMapEvent:
+	getmapxy .@map$, .@x, .@y, 0;
+	if( $@pvp_flag == 2 && .@map$ == "pvp_n_1-5" ) {
+		sleep2(2000);
+		if( !getmapusers("pvp_n_1-5") )
+		{
+			announce "[Arena de Batalhas]: O Evento Player vs Player terminou por todos jogadores abandonar a Arena!",bc_all,"0x00FF00";
+			donpcevent "PvPArenaEvent::OnEndArena";
+		}
+	}
+
+	if( $@gvg_flag == 2 && .@map$ == "guild_vs2" ) {
+		sleep2(2000);
+		if( !getmapusers("guild_vs2") )
+		{
+			announce "[Arena de Batalhas]: O Evento Guild vs Guild terminou por todos jogadores abandonar a Arena!",bc_all,"0x00FF00";
+			donpcevent "GvGArenaEvent::OnEndArena";
+		}
+	}
+	end;
+
+// Evento GvG
+OnStartArenaGvG:
+	waitingroom "Aberto Arena Evento GvG.", 0;
+	end;
+
+OnEndArenaGvG:
+	delwaitingroom;
+	end;
+}
+
+// Expansão para evento de Guild vs Guild
+-	script	Evento GvG#main::GvGArenaEvent	-1,{
+
+	end;
+
+OnStartArena2:
+OnMinute00:
+	if( !$@gvg_flag )
+	{
+		donpcevent "PvPArenaEvent::OnStartArenaGvG";
+		donpcevent "GvGArenaEvent::OnStartArena";
+	}
+	end;
+
+OnStartArena:
+	announce "[Arena de Batalhas]: O Evento Guild vs Guild irá começar em 5 minutos, corram para a arena!",bc_all,"0x00FF00";
+	removemapflag "guild_vs2", mf_gvg;
+	set $@gvg_clock, 4;
+	set $@gvg_flag, 1;
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	// Iniciando o Evento Arena PVP.
+	if( !$@gvg_clock )
+	{
+		if( getmapusers("guild_vs2") > 1 )
+		{
+			announce "[Arena de Batalhas]: A arena está fechado, aqueles que não tiveram oportunidade podem tentar na próxima vez!", bc_all,"0x00FF00";
+			mapannounce "guild_vs2", "[Arena de Batalhas]: Boa luta participantes!",bc_all,"0x00FF00";
+
+			// MapFlags
+			setmapflag "guild_vs2", mf_gvg;
+			setmapflag "guild_vs2", mf_noteleport;
+			setmapflag "guild_vs2", mf_nomemo;
+			setmapflag "guild_vs2", mf_nosave;
+			setmapflag "guild_vs2", mf_nowarp;
+			setmapflag "guild_vs2", mf_nowarpto;
+			setmapflag "guild_vs2", mf_loadevent;
+			set $@gvg_flag, 2;
+			donpcevent "PvPArenaEvent::OnEndArenaGvG";
+		}
+		else {
+			announce "[Arena de Batalhas]: O Evento Guild vs Guild foi cancelado por não haver nenhum jogador na arena!",bc_all,"0x00FF00";
+			set $@gvg_flag, 0;
+		}
+
+		stopnpctimer;
+	}
+	else {
+		announce "[Arena de Batalhas]: O Evento Guild vs Guild irá começar em " + $@gvg_clock + " minutos, corram para a arena!",bc_all,"0x00FF00";
+		set $@gvg_clock, $@gvg_clock - 1;
+		setnpctimer 0;
+	}
+
+	end;
+
+OnEndArena2:
+	announce "[Arena de Batalhas]: O Evento Guild vs Guild foi cancelado!",bc_all,"0x00FF00";
+	donpcevent "PvPArenaEvent::OnEndArenaGvG";
+	if( $@gvg_flag == 1 ) stopnpctimer;
+OnEndArena:
+	removemapflag "guild_vs2", mf_gvg;
+	removemapflag "guild_vs2", mf_noteleport;
+	removemapflag "guild_vs2", mf_nomemo;
+	removemapflag "guild_vs2", mf_nosave;
+	removemapflag "guild_vs2", mf_nowarp;
+	removemapflag "guild_vs2", mf_nowarpto;
+	removemapflag "guild_vs2", mf_loadevent;
+	mapwarp "guild_vs2", "prontera", 154, 175;
+	set $@gvg_flag, 0;
+	end;
+}
+
+//======================================================
+// Função de Computação
+//
+//  Tipos:
+//	0: Atualiza o banco de dados de jogadores.
+//		Argumentos:
+//			1: ID do Jogador.
+//			2: Classe do Jogador.
+//			3: Tipo (0) para vitória e (1) para derrrota.
+//
+//	1: Atualiza o banco de dados de clãns.
+//		Argumentos:
+//			1: ID do Clãn.
+//			2: Tipo (0) para vitória e (1) para derrrota.
+//
+//	2: Atualiza o banco de dados de grupos.
+//		Argumentos:
+//			1: ID do Clãn.
+//			2: Tipo (0) para vitória e (1) para derrrota.
+//======================================================
+function	script	TopRakingPvP	{
+
+	if( getarg(0) == 0 )
+	{
+		//================================================
+        	//=              Top de Jogadores                =
+        	//================================================
+        	// Consulta no banco de dados de Top de Jogadores
+		query_sql "SELECT `char_id` FROM `roe_toppvp_players` WHERE `char_id`='" + getarg(1) + "' AND `status`='1'", .@TP_P_ID;
+
+		if( !getarg(3) )
+		{
+			// Insere uma vitória ao jogador.
+			if( .@TP_P_ID )
+				query_sql "UPDATE `roe_toppvp_players` SET `victory`=`victory`+'1', `job`='" + getarg(2) + "' WHERE `char_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_players` VALUES (" + getarg(1) + ", " + getarg(2) + ", 1, 0, 1)";
+		}
+		else {
+			// Insere uma derrota ao jogador.
+			if( .@TP_P_ID )
+				query_sql "UPDATE `roe_toppvp_players` SET `defeat`=`defeat`+'1', `job`='" + getarg(2) + "' WHERE `char_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_players` VALUES (" + getarg(1) + ", " + getarg(2) + ", 0, 1, 1)";
+		}
+	}
+	else
+	if( getarg(0) == 1 )
+	{
+		//================================================
+        	//=              Top de Clãns                    =
+        	//================================================
+        	// Consulta no banco de dados de Top de Jogadores
+		query_sql "SELECT `guild_id` FROM `roe_toppvp_guilds` WHERE `guild_id`='" + getarg(1) + "' AND `status`='1'", .@TP_G_ID;
+
+		if( !getarg(2) )
+		{
+			// Insere uma vitória ao clãn.
+			if( .@TP_G_ID )
+				query_sql "UPDATE `roe_toppvp_guilds` SET `victory`=`victory`+'1' WHERE `guild_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_guilds` VALUES (" + getarg(1) + ", 1, 0, 1)";
+		}
+		else {
+			// Insere uma derrota ao clãn.
+			if( .@TP_G_ID )
+				query_sql "UPDATE `roe_toppvp_guilds` SET `defeat`=`defeat`+'1' WHERE `guild_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_guilds` VALUES (" + getarg(1) + ", 0, 1, 1)";
+		}
+	}
+	else
+	if( getarg(0) == 2 )
+	{
+		//================================================
+        	//=              Top de Grupos                   =
+        	//================================================
+        	// Consulta no banco de dados de Top de Jogadores
+		query_sql "SELECT `char_id` FROM `roe_toppvp_party` WHERE `party_id`='" + getarg(1) + "' AND `status`='1'", .@TP_G_ID;
+
+		if( !getarg(2) )
+		{
+			// Insere uma vitória ao clãn.
+			if( .@TP_G_ID )
+				query_sql "UPDATE `roe_toppvp_party` SET `victory`=`victory`+'1' WHERE `party_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_party` VALUES (" + getarg(1) + ", 1, 0, 1)";
+		}
+		else {
+			// Insere uma derrota ao clãn.
+			if( .@TP_G_ID )
+				query_sql "UPDATE `roe_toppvp_party` SET `defeat`=`defeat`+'1' WHERE `party_id`='" + getarg(1) + "'";
+			else // Insere o Char no Banco de Dados.
+				query_sql "INSERT INTO `roe_toppvp_party` VALUES (" + getarg(1) + ", 0, 1, 1)";
+		}
+	}
+	else return false;
+
+	return true;
+}
