@@ -1,8 +1,10 @@
-﻿	2013/11/13
+﻿	2013/12/03
+		* Enviado Curandeira. [SoulBlaker]
+	2013/11/13
 		* Enviado a DevilSquare 2.0
 			- Houve muitas mudanças.
 		* Enviado evento Ranking PvP. [SoulBlaker]
-	2013/20/27
+	2013/10/27
 		* Correções no Evento Caçador. [SoulBlaker]
 			- Script testado e estável.
 	2013/10/26

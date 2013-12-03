@@ -1,4 +1,4 @@
-		.----------------------------------------------------------.
+﻿		.----------------------------------------------------------.
 		.            SoulBlaker Scripts Apresenta:                 .
 		.                ___________________                       .
 		.               /   _____/\______   \                      .
@@ -27,3 +27,5 @@
 		O que tem de novo?
 
 		/eventos/	-> Aqui se encontra todos os scripts de evento.
+		/gde/		-> Aqui se encontra todos os scripts de guerra.
+		/outros/	-> Aqui se encontra qualquer outro tipo de script.
