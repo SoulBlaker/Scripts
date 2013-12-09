@@ -22,6 +22,8 @@
 // . Changelog da Versão:                                     .
 // .  * 2.0 [SoulBlaker]                                      .
 // .	- Iniciado a DevilSquare 2.0.                         .
+// .  * 2.0b [SoulBlaker]                                     .
+// .    - Correções no for responsável por invocar monstros.  .
 // *----------------------------------------------------------*
 -	script	Devil Square#ds_01::DevilSquareEvent	-1,{
 
@@ -299,7 +301,7 @@ OnStartArena:
 	if( $@ds_flag == 2 && $@ds_round <= $@ds_horde )
 	{
 		// Invocando Monstros
-		for( set .@i, 0; .@i < getarraysize($@ds_mobid); set .@i, .@i++ )
+		for( set .@i, 0; .@i < getarraysize($@ds_mobid); set .@i, .@i + 1 )
 		{
 			if( $@ds_mobid[.@i] && $@ds_mobqt[.@i] && $@ds_mobho[.@i] == $@ds_round && (getmonsterinfo($@ds_mobid[.@i], 0)?1:0) )
 				monster "ordeal_1-1", 0, 0, "[Devil Square] "+getmonsterinfo($@ds_mobid[.@i], 0), $@ds_mobid[.@i], $@ds_mobqt[.@i],"DevilSquareEvent::OnMobDead";
@@ -325,7 +327,7 @@ OnStartArena:
 			 setmapflag "ordeal_1-1", mf_noskill;
 
 		// Invocando as Arca Monstro.
-		for( set .@i, 0; .@i < getarraysize($@ds_treasureid); set .@i, .@i++ )
+		for( set .@i, 0; .@i < getarraysize($@ds_treasureid); set .@i, .@i + 1 )
 		{
 			if( $@ds_treasureid[.@i] && $@ds_treasureid[.@i] && (getmonsterinfo($@ds_treasureid[.@i], 0)?1:0) )
 				monster "ordeal_1-1", 0, 0, "[Devil Square] Arca do Tesouro", $@ds_treasureid[.@i], $@ds_treasureqt[.@i],"DevilSquareEvent::OnTreasureDead";

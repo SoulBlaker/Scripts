@@ -1,4 +1,6 @@
-﻿	2013/12/03
+﻿	2013/12/09
+		* Correções no for responsável por invocar monstros da DS. [SoulBlaker]
+	2013/12/03
 		* Enviado Curandeira. [SoulBlaker]
 	2013/11/13
 		* Enviado a DevilSquare 2.0
