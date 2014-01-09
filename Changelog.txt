@@ -1,4 +1,6 @@
-﻿	2013/12/09
+﻿	2014/01/08
+		* Atualização nas tabelas do banco de dados. [SoulBlaker]
+	2013/12/09
 		* Correções no for responsável por invocar monstros da DS. [SoulBlaker]
 	2013/12/03
 		* Enviado Curandeira. [SoulBlaker]
