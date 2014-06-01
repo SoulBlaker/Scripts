@@ -1,4 +1,6 @@
-﻿	2014/01/08
+﻿	2014/06/01
+		* Enviado Master Of Quests. [SoulBlaker]
+	2014/01/08
 		* Atualização nas tabelas do banco de dados. [SoulBlaker]
 	2013/12/09
 		* Correções no for responsável por invocar monstros da DS. [SoulBlaker]
