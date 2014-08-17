@@ -1,0 +1,345 @@
+// .----------------------------------------------------------.
+// .            SoulBlaker Scripts Apresenta:                 .
+// .                ___________________                       .
+// .               /   _____/\______   \                      .
+// .               \_____  \  |    |  _/                      .
+// .               /        \ |    |   \                      .
+// .              /_______  / |______  /                      .
+// .                      \/         \/                       .
+// .            [ Cronus Advanced Scripts ]                   .
+// .                                                    v1.1  .
+// .----------------------------------------------------------.
+// ;  http://forum.cronus-emulator.com/user/20800-soulblaker  ;
+// .----------------------------------------------------------.
+// . Script:                                                  .
+// .  Evento Páginas da Sobrevivênça                          .
+// .----------------------------------------------------------.
+// . Por: SoulBlaker   Compátivel: Cronus       versão: 1.2   .
+// .----------------------------------------------------------.
+// . Descrição:                                               .
+// .  Os jogadores devem encontrar páginas espalhadas em um   .
+// .  mapa cujo foi tomado por monstros.                      .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .  * 1.0 [SoulBlaker]                                      .
+// .	- Iniciado NPC, idéia original de [Cloudwolf].        .
+// .  * 1.1 [SoulBlaker]                                      .
+// .    - Pequenas correções.                                 .
+// .  * 1.2 [SoulBlaker]                                      .
+// .    - Otimizações e estabilização no script.              .
+// *----------------------------------------------------------*
+// . [Nota Obrigatória]: Procure por 'Configurações' para     .
+// .                     encontrar  tipos de configurações    .
+// .                     por todo script.                     .
+// .                                                          .
+// . [Nota 1]: Ponha 0 para desabilitar esta opção.           .
+// .                                                          .
+// . [Nota 2]: Não alterar com dúvidas.                       .
+// .                                                          .
+// . [Nota 3]: Tipos de recompensa para sobreviventes:        .
+// .           1: Ganha o item ao encontrar uma página.       .
+// .           2: Ganha um item ao matar o monstro.           .
+// .           3: Ganha um item ao encontrar uma página ou a  .
+// .              matar o monstro.                            .
+// *----------------------------------------------------------*
+// Configurações Globais
+-	script	ES#Config::EvSobrevivenca	-1,{
+OnInit:
+	// Configurações
+	set $@ev_pagesurvival, 8;		// Quantidade de Páginas. [Nota 2]
+	set $@ev_ps_premium_mode, 1;		// Tipo de recompensa para os sobreviventes. [Nota 1] [Nota 3]
+
+	// Configurações dos monstros.
+	setarray $@ev_ps_monster[0], 1704, 1, 1705, 1, 1706, 1, 1707, 1, 1708, 1;	// [Exemplo]: mob_id, amount, mob_id, amount...
+
+	// Configurações de itens de recompensa.
+	setarray $@ev_ps_item[0], 501, 1, 502, 1, 503, 1, 504, 1, 505, 1;		// [Exemplo]: item_id 1, amount, item_id 2, amount, item_id 3...
+	end;
+	
+// Horário do Evento.
+OnMinute01:
+	if( !$@ev_pagesurvival_flag )
+		donpcevent "EvSobrevivenca::OnStartArena";
+	end;
+
+OnStartArena:
+	// Matando todos monstro do mapa.
+	killmonsterall "ordeal_3-1";
+
+	// Retirando todos jogadores do mapa.
+	mapwarp "ordeal_3-1", "jupe_ele", 49, 52;
+
+	// Mapflags
+	setmapflag "ordeal_3-1", mf_noteleport;
+	setmapflag "ordeal_3-1", mf_nomemo;
+	setmapflag "ordeal_3-1", mf_nosave;
+	setmapflag "ordeal_3-1", mf_nowarp;
+	setmapflag "ordeal_3-1", mf_nowarpto;
+	setmapflag "ordeal_3-1", mf_nomobloot;
+	setmapflag "ordeal_3-1", mf_nomvploot;
+
+	waitingroom "Aberto o Evento", 0;
+
+	announce "[Evento Sobrevivênça]: O Portal está aberto e será fechado dentro de 5 minutos.", 8;
+	set $@ev_pagesurvival_flag, 1;
+	setnpctimer 0;
+	initnpctimer;
+	startnpctimer;
+	end;
+
+OnTimer60000:
+	announce "[Evento Sobrevivênça]: O Portal está aberto e será fechado dentro de 4 minutos.", 8;
+	end;
+
+OnTimer120000:
+	announce "[Evento Sobrevivênça]: O Portal está aberto e será fechado dentro de 3 minutos.", 8;
+	end;
+
+OnTimer180000:
+	announce "[Evento Sobrevivênça]: O Portal está aberto e será fechado dentro de 2 minutos.", 8;
+	end;
+
+OnTimer240000:
+	announce "[Evento Sobrevivênça]: O Portal está aberto e será fechado dentro de um minuto.", 8;
+	end;
+
+OnTimer300000:
+	// Iniciando o Evento!
+	for( set .@i,1; .@i <= $@ev_pagesurvival; set .@i, .@i + 1 )
+		enablenpc "Página#0"+.@i;
+
+	// Monstros
+	if( getarraysize($@ev_ps_monster) )
+	{
+		for( set .@i, 0; .@i < getarraysize($@ev_ps_monster); set .@i, .@i + 2 )
+			monster "ordeal_3-1", 0, 0, "[EvPS]: "+getmonsterinfo($@ev_ps_monster[.@i], 0), $@ev_ps_monster[.@i], $@ev_ps_monster[(.@i+1)], "EvSobrevivenca::OnMobDead";
+	}
+
+	set $@ev_pagesurvival_count, $@ev_pagesurvival;
+
+	set $@ev_pagesurvival_flag, 2;
+	donpcevent "PageSurvival::OnEnable";
+	announce "[Evento Sobrevivênça]: O Portal está fechado, aqueles que não tiveram oportunidade podem tentar na próxima vez!", 8;
+	donpcevent "#EvPStimer::OnEnable";
+	stopnpctimer;
+	end;
+
+OnMobDead:
+	if( $@ev_ps_premium_mode == 2 || $@ev_ps_premium_mode == 3 )
+		callfunc "Ev_PS_Premium";
+	end;
+
+OnEnd:
+	// Matando todos monstro do mapa.
+	killmonsterall "ordeal_3-1";
+
+	// Retirando todos jogadores do mapa.
+	mapwarp "ordeal_3-1", "new_1-2", 99, 94;
+
+	// Mapflags
+	removemapflag "ordeal_3-1", mf_noteleport;
+	removemapflag "ordeal_3-1", mf_nomemo;
+	removemapflag "ordeal_3-1", mf_nosave;
+	removemapflag "ordeal_3-1", mf_nowarp;
+	removemapflag "ordeal_3-1", mf_nowarpto;
+	removemapflag "ordeal_3-1", mf_nomobloot;
+	removemapflag "ordeal_3-1", mf_nomvploot;
+
+	set $@ev_pagesurvival_flag, 0;
+	delwaitingroom;
+	stopnpctimer;
+	end;
+
+OnPCDieEvent:
+	if( strcharinfo(3) == "ordeal_3-1" && (getmapusers("ordeal_3-1")-1) <= 0 )
+	{
+		announce "[Evento Sobrevivênça]: Todos jogadores foram mortos no evento!", 8;
+		donpcevent "EvSobrevivenca::OnEnd";
+	}
+
+	end;
+}
+
+// Script do Evento
+prontera,147,173,5	script	Evento Sobrevivênça#main::ESNPC	705,{
+
+	// Configurações
+	set .@BaseLvl, 99;		// Nível de Base para pode participar do evento. [Nota 1]
+	set .@ZenyCost, 0;		// Custo para participar deste evento. [Nota 1]
+	set .@UserWarp, 0;		// Quantidade máxima de jogadores que podem entrar no evento. [Nota 1]
+	set .@AdminPanel, 99;		// Nível de Administração para ligar/desligar o evento. [Nota 1]
+
+	while(1)
+	{
+		mes "[Estranho]";
+		mes "Olá aventureiro, eu tenho um desafio para você.";
+		mes "Quero que você colete 8 páginas em uma velha casa para mim.";
+		mes "Você aceita?";
+		next;
+		switch( select((getgmlevel()>=.@adm_lvl?($@ev_pagesurvival_flag?"^0000FF- Desligar o Evento.^000000":"^0000FF- Ligar o Evento.^000000"):""), ($@ev_pagesurvival_flag==1?"- Aceito o desafio.":""), "- Informações.", "- Não, obrigado.") )
+		{
+			case 1:
+				mes "^483D8B[Estranho]^000000";
+
+				if( $@ev_pagesurvival_flag )
+					mes "Deseja desligar a ^0000FFEvento Páginas da Sobrevivência^000000?";
+				else
+					mes "Deseja ligar a ^0000FFEvento Páginas da Sobrevivência^000000?";
+
+				next;
+				if( select("- Sim", "- Não.") == 1 )
+				{
+					if( !$@ev_pagesurvival_flag )
+					{
+						mes "Foi enviado uma sinalização para iniciar o evento!";
+						donpcevent "EvSobrevivenca::OnStartArena";
+					}
+					else
+					{
+						mes "Foi enviado uma sinalização para encerrar o evento!";
+						donpcevent "EvSobrevivenca::OnEnd";
+						//announce "O Evento Sobrevivência foi cancelado!",8;
+					}
+					next;
+				}
+				break;
+			case 2:
+				mes "^483D8B[Estranho]^000000";
+
+				if( !$@ev_pagesurvival_flag )
+					mes "Me desculpe, mais o evento ainda não começou!";
+				else if( $@ev_pagesurvival_flag == 2 )
+					mes "Me desculpe, mais o evento já começou!";
+				else if( .@BaseLvl && BaseLevel < .@BaseLvl )
+					mes "Me desculpe, mais você deve ter o Nv. Base equivalente à " + .@BaseLvl + ".";
+				else if( .@ZenyCost && Zeny < .@ZenyCost )
+					mes "Me desculpe, mais você deve ter " + .@ZenyCost + " Zeny(s).";
+				else if( .@UserWarp && getmapusers("ordeal_3-1") >= .@UserWarp )
+					mes "Me desculpe, mais o evento está com a quantidade máxima de jogadores!";
+				else {
+					mes "Vou te mandar agora para o evento!";
+					close2;
+					if( .@ZenyCost ) set Zeny, Zeny - .@ZenyCost;
+					warp "ordeal_3-1", 0, 0;
+					end;
+				}
+
+				close;
+			case 3:
+				mes "^483D8B[Estranho]^000000";
+				mes "Neste desafio você terá que encontrar 08 páginas escondidas pelo mapa,";
+				mes "talvez haja algum contratempo, então tome cúidado!";
+
+				if( .@BaseLvl )
+					mes "Para participar do evento você deve ter o Nv. de Base equivalente a " + .@BaseLvl + ".";
+				if( .@ZenyCost )
+					mes "E há um custo de " + .@ZenyCost + " Zeny(s) para participar do evento!";
+
+				mes "E não se esqueça, caso não consiga participar do evento, ele ocorre a cada 1 hora."; 
+
+				break;
+			case 4:
+				mes "^483D8B[Estranho]^000000";
+				mes "Tudo bem, volte quando haver alguma dúvida.";
+				close;
+		}
+	}
+}
+
+-	script	#EvPStimer	-1,{
+
+OnEnable:
+	initnpctimer;
+	end;
+
+OnTimer60000:
+	stopnpctimer;
+	if( !getmapusers("ordeal_3-1") )
+		donpcevent "EvSobrevivenca::OnEnd";
+	else
+		initnpctimer;
+		
+	end;
+}
+
+// Páginas do Evento
+ordeal_3-1,0,0,5	script	#Page::PageSurvival	-1,{
+
+	if( $@ev_ps_premium_mode == 1 || $@ev_ps_premium_mode == 3 )
+		callfunc "EV_PS_Premium";
+
+	if( $@ev_pagesurvival_count == 1 )
+	{
+		announce getmapusers("ordeal_3-1") + " jogador(es) conseguiu sobreviver ao evento.",8;
+		set $@ev_pagesurvival_count, 0;
+		donpcevent "EvSobrevivenca::OnEnd";
+	}
+	else if( $@ev_pagesurvival_count > 1 ) {
+		set $@ev_pagesurvival_count, $@ev_pagesurvival_count - 1;
+		mapannounce "ordeal_3-1", "Falta apenas encontrar " + $@ev_pagesurvival_count + " Páginas para se salvarem!",0;
+		disablenpc strnpcinfo(0);
+	}
+	end;
+	
+OnEnable:
+	if( strnpcinfo(2) != "Page") end;
+	setarray .@dbflagsx[0],146,151,146,152,146,154,145,145,143,156,142,150;
+	setarray .@dbflagsy[0], 86, 78, 69, 60, 51, 45, 41, 36, 35, 22, 21, 25;
+	setarray .@dbflagsx[12],110,105,101, 88, 84, 69, 72, 61, 64, 45, 53, 54;
+	setarray .@dbflagsy[12],105,107, 94, 92, 80, 76, 65, 71, 43, 65, 54, 64;
+	setarray .@dbflagsx[24], 80, 77, 64, 57, 48, 44, 38, 33, 35, 33, 24, 21;
+	setarray .@dbflagsy[24],154,147,151,147,154,144,160,160,151,138,147,157;
+	setarray .@dbflagsx[36],108, 98, 99, 93, 90, 77, 70, 72, 55, 61, 42, 53;
+	setarray .@dbflagsy[36],197,195,204,200,214,217,225,240,226,250,235,244;
+	setarray .@dbflagsx[48],147,153,147,153,146,144,139,151,158,151,143,155;
+	setarray .@dbflagsy[48],208,212,219,229,241,254,261,262,269,273,273,278;
+	setarray .@dbflagsx[60],197,199,213,214,229,243,225,231,237,247,251,252;
+	setarray .@dbflagsy[60],198,206,207,217,223,229,244,247,243,246,243,237;
+	setarray .@dbflagsx[72],207,212,222,233,238,249,253,256,262,267,273,277;
+	setarray .@dbflagsy[72],145,152,148,154,147,152,146,156,159,142,152,144;
+	setarray .@dbflagsx[84],190,190,200,198,212,223,237,230,226,234,252,242;
+	setarray .@dbflagsy[84],111,102,104, 95, 92, 70, 71, 66, 59, 42, 59, 57;
+	setarray .@dbflagsx[96],148,152,147,152,146,152,146,153,142,157,143,152;
+	setarray .@dbflagsy[96], 89, 86, 76, 70, 65, 58, 49, 47, 39, 38, 30, 21;
+	
+	setarray .@moveto[1], rand(0,11), rand(12,23), rand(24,35), rand(36,47), rand(48,59), rand(60,71), rand(72,83), rand(84,95), rand(96,107);
+	for( set .@i, 1; .@i <= 8; set .@i, .@i + 1 )
+	{
+		
+		enablenpc "Página#0"+.@i;
+		movenpc "Página#0"+.@i, .@dbflagsx[.@moveto[.@i]], .@dbflagsy[.@moveto[.@i]];
+		getmapxy(.@map$,.@x,.@y,1,"Página#0"+.@i);
+		debugmes "Teste: "+ .@map$ + " e " + .@x + " e " + .@y + ".";
+	}
+	end;
+	
+OnInit:
+	if( strnpcinfo(2) != "Page" )
+		disablenpc strnpcinfo(0);
+	end;
+}
+
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#01	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#02	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#03	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#04	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#05	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#06	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#07	844
+ordeal_3-1,0,0,5	duplicate(PageSurvival)	Página#08	844
+
+// Função para dar o premio ao jogador.
+function	script	EV_PS_Premium	{
+
+	for( set .@i, 0; .@i < getarraysize($@ev_ps_item); set .@i, .@i + 2 )
+	{
+		set .@tmp_itemid[getarraysize(.@tmp_itemid)], $@ev_ps_item[.@i];
+		set .@tmp_itemqt[getarraysize(.@tmp_itemqt)], $@ev_ps_item[(.@i+1)];
+	}
+
+	set .@item, rand((getarraysize(.@tmp_itemid)-1));
+
+	getitem .@tmp_itemid[.@item], .@tmp_itemqt[.@item];
+
+	return;	
+}

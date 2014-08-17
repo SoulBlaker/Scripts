@@ -1,4 +1,6 @@
-﻿	2014/06/01
+﻿	2014/08/17
+		* Enviado eventos estabilizados. [SoulBlaker]
+	2014/06/01
 		* Enviado Master Of Quests. [SoulBlaker]
 	2014/01/08
 		* Atualização nas tabelas do banco de dados. [SoulBlaker]
